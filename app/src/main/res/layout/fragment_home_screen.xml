@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeScreen.HomeScreen">
+    tools:context=".presentation.homeScreen.HomeScreen">
 
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/rootScroller"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">

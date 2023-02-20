@@ -1,8 +1,8 @@
 package com.mk.ranobereader.backend.HomeInformation
 
 import android.os.AsyncTask
-import com.mk.ranobereader.Const
-import com.mk.ranobereader.models.RanobeModel
+import com.mk.core.Const
+import com.mk.domain.models.RanobeModel
 import org.json.JSONException
 import org.json.JSONObject
 import org.jsoup.Jsoup
@@ -19,16 +19,15 @@ class RanobeListParser : AsyncTask<String?, Void?, List<RanobeModel>?>() {
     fun getRanobeList(url: String, method: String, payload: JSONObject): List<RanobeModel> {
         var doc: Document? = null
         // URL of the webpage to parse
-        if (method == Const.GET) {
+        if (method == com.mk.core.Const.GET) {
             // Connect to the URL and parse the HTML
             doc = Jsoup.connect(url).post()
-        } else if (method == Const.POST) {
+        } else if (method == com.mk.core.Const.POST) {
             // Parse the response with Jsoup
             val header: MutableMap<String, String> = HashMap()
             val it = payload.keys()
             while (it.hasNext()) {
                 val key = it.next()
-
                 header[key] = payload.getString(key)
             }
 
