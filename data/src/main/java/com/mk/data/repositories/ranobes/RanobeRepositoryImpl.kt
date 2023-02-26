@@ -1,31 +1,32 @@
 package com.mk.data.repositories.ranobes
 
 import com.mk.domain.models.RanobeModel
-import com.mk.domain.useCase.RanobeRepository
-import com.mk.core.Const
+import com.mk.domain.useCase.IRanobeRepository
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 
-class RanobeRepositoryImpl : RanobeRepository {
+class RanobeRepositoryImpl : IRanobeRepository {
     override suspend fun fetchRanobeList(
         url: String,
         method: String,
-        payload: JSONObject
+        payload: JSONObject?
     ): List<RanobeModel> {
         var doc: Document? = null
         // URL of the webpage to parse
         if (method == com.mk.core.Const.GET) {
             // Connect to the URL and parse the HTML
-            doc = Jsoup.connect(url).post()
+            doc = Jsoup.connect(url).get()
         } else if (method == com.mk.core.Const.POST) {
             // Parse the response with Jsoup
             val header: MutableMap<String, String> = HashMap()
-            val it = payload.keys()
-            while (it.hasNext()) {
-                val key = it.next()
-                header[key] = payload.getString(key)
+            val it = payload?.keys()
+            if (it != null) {
+                while (it.hasNext()) {
+                    val key = it.next()
+                    header[key] = payload.getString(key)
+                }
             }
 
             doc = Jsoup.connect(url).data(header).post()

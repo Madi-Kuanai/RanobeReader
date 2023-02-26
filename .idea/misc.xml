@@ -5,12 +5,14 @@
       <map>
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/drawable/genres_card_decorator.xml" value="0.1935" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/activity_ranobe_list_screen.xml" value="0.3625" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_download_screen.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_favourites_screen.xml" value="0.18541666666666667" />
-        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_home_screen.xml" value="0.18541666666666667" />
+        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_home_screen.xml" value="0.33" />
+        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_ranobe_list_screen.xml" value="0.3625" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_setting_screen.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/genres_card.xml" value="0.358695652173913" />
-        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/populars_card.xml" value="0.18541666666666667" />
+        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/populars_card.xml" value="0.33" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/ranobe_card_with_description.xml" value="0.33" />
       </map>
     </option>

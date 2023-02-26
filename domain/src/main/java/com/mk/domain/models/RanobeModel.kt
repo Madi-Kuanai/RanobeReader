@@ -7,7 +7,7 @@ class RanobeModel(
     ratingOfTranslate: String, likes: String, stateOfTranslation: String,
     genres: Map<String, String>, tags: Map<String, String>
 ) {
-    var name: String
+    var title: String
     var imageLink: String
     var linkToRanobe: String
     var author: String
@@ -22,7 +22,7 @@ class RanobeModel(
     var tags: Map<String, String>
     override fun toString(): String {
         return "RanobeModel{" +
-                "name='" + name + '\'' +
+                "name='" + title + '\'' +
                 ", imageLink='" + imageLink + '\'' +
                 ", linkToRanobe='" + linkToRanobe + '\'' +
                 ", author='" + author + '\'' +
@@ -40,7 +40,7 @@ class RanobeModel(
 
     init {
         this.imageLink = "https://tl.rulate.ru$imageLink"
-        this.name = name.split("/").toTypedArray()[name.split("/").toTypedArray().size - 1]
+        this.title = name.split("/").toTypedArray()[name.split("/").toTypedArray().size - 1]
         this.linkToRanobe = linkToRanobe
         this.author = author
         this.description = description

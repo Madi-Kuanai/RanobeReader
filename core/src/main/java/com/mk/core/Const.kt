@@ -1,5 +1,7 @@
 package com.mk.core
 
+import org.json.JSONObject
+
 object Const {
     const val baseURI = "https://tl.rulate.ru"
     const val sharedTheme = "ThemePref"

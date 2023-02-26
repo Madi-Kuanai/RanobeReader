@@ -31,7 +31,7 @@ class RanobeWithDescriptionCardAdapter(context: Context, listOfRanobeWithDescrip
     class RanobeWithDescriptionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var binding: RanobeCardWithDescriptionBinding = RanobeCardWithDescriptionBinding.bind(itemView)
         fun bind(ranobeModel: RanobeModel) {
-            binding.title.text = ranobeModel.name
+            binding.title.text = ranobeModel.title
             binding.description.text = ranobeModel.description
         }
 

@@ -1,21 +1,19 @@
-package com.mk.ranobereader
+package com.mk.ranobereader.presentation
 
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationBarView
-import com.mk.ranobereader.presentation.homeScreen.HomeScreen
 import com.mk.data.themeSharedPref.PreferenceService
+import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.ActivityMainBinding
 import com.mk.ranobereader.presentation.downloadScreen.DownloadScreen
 import com.mk.ranobereader.presentation.exploreScreen.ExploreScreen
 import com.mk.ranobereader.presentation.favouritesScreen.FavouritesScreen
+import com.mk.ranobereader.presentation.homeScreen.HomeScreen
 import com.mk.ranobereader.presentation.settingScreen.SettingScreen
 
 class MainActivity : AppCompatActivity() {
@@ -39,17 +37,6 @@ class MainActivity : AppCompatActivity() {
         setNavigationSettings()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            val params: ViewGroup.LayoutParams = binding!!.bottomNavigationView.layoutParams;
-            val displayMetrics = DisplayMetrics()
-            windowManager.defaultDisplay.getMetrics(displayMetrics)
-            val height = displayMetrics.heightPixels
-            params.height = (height * 0.3).toInt();
-            binding!!.bottomNavigationView.layoutParams = params;
-        }
-    }
 
     private fun setNavigationSettings() {
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout, homeScreen).commit()
@@ -89,7 +76,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setThemeSettings() {
-        println(pref!!.isNightTheme)
         binding!!.themeController.isChecked = pref!!.isNightTheme
         AppCompatDelegate.setDefaultNightMode(if (pref!!.isNightTheme) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
         binding!!.themeController.setOnCheckedChangeListener { _: CompoundButton?, b: Boolean ->

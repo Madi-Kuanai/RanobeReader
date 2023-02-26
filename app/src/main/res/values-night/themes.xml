@@ -16,7 +16,7 @@
         <item name="iconTint">#5043FA</item>
         <item name="appbarColor">#1C1B20</item>
         <item name="android:textColor">@color/white</item>
-        <item name="cardViewColor">?color</item>
+        <item name="cardViewColor">?colorPrimary</item>
     </style>
 
 </resources>
