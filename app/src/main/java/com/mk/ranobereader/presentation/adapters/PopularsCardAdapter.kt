@@ -1,4 +1,4 @@
-package com.mk.ranobereader.presentation.homeScreen.viewModel.adapters
+package com.mk.ranobereader.presentation.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

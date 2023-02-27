@@ -6,8 +6,8 @@ import com.mk.domain.models.RanobeModel
 
 import org.json.JSONObject
 
-class LoadMostViewedUseCase(private val IRanobeRepository: IRanobeRepository) {
-    suspend fun execute(): List<RanobeModel> {
+class LoadMostViewedUseCase(private val IRanobeRepository: IRanobeRepository) : IReturnListRanobe {
+    override suspend fun execute(): List<RanobeModel> {
         val payload = JSONObject()
         payload.put("period", "new")
         payload.put("adult", 0)

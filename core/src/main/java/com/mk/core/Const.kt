@@ -12,4 +12,5 @@ object Const {
     const val GET = "GET"
     const val POST = "POST"
     const val TAG = "TAG"
+    const val METHOD = "METHOD"
 }

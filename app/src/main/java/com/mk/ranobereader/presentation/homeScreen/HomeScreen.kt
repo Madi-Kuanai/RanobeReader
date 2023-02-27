@@ -18,13 +18,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.mk.core.Const
 import com.mk.core.Const.TAG
 import com.mk.domain.models.RanobeModel
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.FragmentHomeScreenBinding
+import com.mk.ranobereader.presentation.adapters.PopularsCardAdapter
 import com.mk.ranobereader.presentation.homeScreen.viewModel.HomeViewModel
 import com.mk.ranobereader.presentation.homeScreen.viewModel.HomeViewModelFactory
-import com.mk.ranobereader.presentation.homeScreen.viewModel.adapters.PopularsCardAdapter
 import com.mk.ranobereader.presentation.ranobeListScreen.RanobeListScreen
 
 class HomeScreen : Fragment() {
@@ -64,12 +65,22 @@ class HomeScreen : Fragment() {
         } catch (e: Exception) {
             Log.d(TAG, e.toString())
         }
-        binding.allPopulars.setOnClickListener(openListScreen())
+        binding.allPopulars.setOnClickListener(openMostPopularList())
+        binding.allMostViewed.setOnClickListener(openMostViewedList())
     }
 
-    private fun openListScreen(): View.OnClickListener {
+    private fun openMostViewedList(): View.OnClickListener? {
         return View.OnClickListener {
             val intent = Intent(this.requireActivity(), RanobeListScreen()::class.java)
+            intent.putExtra(Const.METHOD, Const.POST)
+            startActivity(intent)
+        }
+    }
+
+    private fun openMostPopularList(): View.OnClickListener {
+        return View.OnClickListener {
+            val intent = Intent(this.requireActivity(), RanobeListScreen()::class.java)
+            intent.putExtra(Const.METHOD, Const.GET)
             startActivity(intent)
         }
     }
@@ -83,7 +94,6 @@ class HomeScreen : Fragment() {
         val linearLayoutManager = LinearLayoutManager(context)
         popularsCardAdapter.addCard(ranobeModel)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
-
         binding.popularsRecView.layoutManager = linearLayoutManager
         binding.popularsRecView.adapter = popularsCardAdapter
     }

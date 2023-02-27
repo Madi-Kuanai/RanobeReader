@@ -1,0 +1,61 @@
+package com.mk.ranobereader.presentation.adapters
+
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.mk.domain.models.RanobeModel
+import com.mk.ranobereader.R
+import com.mk.ranobereader.databinding.RanobeCardWithDescriptionBinding
+import com.mk.ranobereader.presentation.adapters.RanobeWithDescriptionCardAdapter.RanobeWithDescriptionHolder
+
+class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescriptionHolder>() {
+    var listOfRanobeWithDescription: MutableList<RanobeModel> = ArrayList()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RanobeWithDescriptionHolder {
+        val viewItem = LayoutInflater.from(parent.context)
+            .inflate(R.layout.ranobe_card_with_description, parent, false)
+        return RanobeWithDescriptionHolder(viewItem)
+    }
+
+    override fun onBindViewHolder(holder: RanobeWithDescriptionHolder, position: Int) {
+        holder.bind(listOfRanobeWithDescription[position])
+    }
+
+    override fun getItemCount(): Int {
+        return listOfRanobeWithDescription.size
+    }
+
+    class RanobeWithDescriptionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var binding: RanobeCardWithDescriptionBinding =
+            RanobeCardWithDescriptionBinding.bind(itemView)
+
+        fun bind(ranobeModel: RanobeModel) {
+            binding.title.text = ranobeModel.title
+            binding.description.text = ranobeModel.description
+            Glide.with(binding.imageCover).load(ranobeModel.imageLink)
+                .apply(RequestOptions().override(250, 500))
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .transform(RoundedCorners(20))
+                .placeholder(R.drawable.black_image)
+                .into(binding.imageCover)
+        }
+
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun addRanobe(ranobeModels: List<RanobeModel>?) {
+        listOfRanobeWithDescription.addAll(ranobeModels!!)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public fun addRanobe(ranobeModel: RanobeModel) {
+        listOfRanobeWithDescription.add(ranobeModel)
+        notifyDataSetChanged()
+    }
+}
