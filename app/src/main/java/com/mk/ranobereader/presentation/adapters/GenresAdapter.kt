@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mk.core.Const
+import com.mk.domain.Const
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.GenresCardBinding
 
@@ -19,7 +19,7 @@ class GenresAdapter : RecyclerView.Adapter<GenresAdapter.GenresHolder>() {
         fun bind(genreName: String, genreHref: String) {
             binding.genreText.text = genreName
             binding.root.setOnClickListener {
-                Log.d(com.mk.core.Const.TAG, genreHref)
+                Log.d(Const.TAG, genreHref)
             }
         }
     }

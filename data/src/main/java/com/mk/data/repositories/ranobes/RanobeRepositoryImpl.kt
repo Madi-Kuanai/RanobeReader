@@ -1,5 +1,6 @@
 package com.mk.data.repositories.ranobes
 
+import com.mk.domain.Const
 import com.mk.domain.models.RanobeModel
 import com.mk.domain.useCase.IRanobeRepository
 import org.json.JSONObject
@@ -15,10 +16,10 @@ class RanobeRepositoryImpl : IRanobeRepository {
     ): List<RanobeModel> {
         var doc: Document? = null
         // URL of the webpage to parse
-        if (method == com.mk.core.Const.GET) {
+        if (method == Const.GET) {
             // Connect to the URL and parse the HTML
             doc = Jsoup.connect(url).get()
-        } else if (method == com.mk.core.Const.POST) {
+        } else if (method == Const.POST) {
             // Parse the response with Jsoup
             val header: MutableMap<String, String> = HashMap()
             val it = payload?.keys()
@@ -76,7 +77,7 @@ class RanobeRepositoryImpl : IRanobeRepository {
                     tags.put(aElement.text(), aElement.attr("href"))
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+//                e.printStackTrace()
             }
 
             val model = RanobeModel(

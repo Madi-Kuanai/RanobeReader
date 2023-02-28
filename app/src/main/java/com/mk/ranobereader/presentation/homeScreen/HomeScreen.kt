@@ -1,6 +1,7 @@
 package com.mk.ranobereader.presentation.homeScreen
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
@@ -18,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.mk.core.Const
-import com.mk.core.Const.TAG
+import com.mk.domain.Const.EXTRA_TYPE
+import com.mk.domain.Const.MOST_POPULAR_TYPE
+import com.mk.domain.Const.MOST_VIEWED_TYPE
+import com.mk.domain.Const.TAG
 import com.mk.domain.models.RanobeModel
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.FragmentHomeScreenBinding
@@ -40,7 +43,7 @@ class HomeScreen : Fragment() {
         Log.d(TAG, "Home Create")
         homeVM = ViewModelProvider(
             this.requireActivity(),
-            HomeViewModelFactory()
+            HomeViewModelFactory(context?.applicationContext as Application)
         )[HomeViewModel::class.java]
         return binding.root
     }
@@ -55,6 +58,7 @@ class HomeScreen : Fragment() {
                 }
             }
             homeVM.mvMostViewedLayoutPosition.observe(viewLifecycleOwner) {
+                Log.d(TAG, "pos: $it")
                 binding.rootScroller.y = it
             }
             homeVM.mvPopulars.observe(viewLifecycleOwner) { ranobes ->
@@ -64,15 +68,16 @@ class HomeScreen : Fragment() {
             }
         } catch (e: Exception) {
             Log.d(TAG, e.toString())
+
         }
         binding.allPopulars.setOnClickListener(openMostPopularList())
         binding.allMostViewed.setOnClickListener(openMostViewedList())
     }
 
-    private fun openMostViewedList(): View.OnClickListener? {
+    private fun openMostViewedList(): View.OnClickListener {
         return View.OnClickListener {
             val intent = Intent(this.requireActivity(), RanobeListScreen()::class.java)
-            intent.putExtra(Const.METHOD, Const.POST)
+            intent.putExtra(EXTRA_TYPE, MOST_VIEWED_TYPE)
             startActivity(intent)
         }
     }
@@ -80,14 +85,18 @@ class HomeScreen : Fragment() {
     private fun openMostPopularList(): View.OnClickListener {
         return View.OnClickListener {
             val intent = Intent(this.requireActivity(), RanobeListScreen()::class.java)
-            intent.putExtra(Const.METHOD, Const.GET)
+            intent.putExtra(EXTRA_TYPE, MOST_POPULAR_TYPE)
             startActivity(intent)
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        homeVM.mvMostViewedLayoutPosition.value = binding.rootScroller.y
+
+    }
     override fun onDestroy() {
         super.onDestroy()
-        homeVM.mvMostViewedLayoutPosition.value = binding.rootScroller.y
     }
 
     private fun createViewAndAddToRecycler(ranobeModel: RanobeModel) {

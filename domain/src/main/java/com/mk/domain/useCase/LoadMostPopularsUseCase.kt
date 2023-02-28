@@ -4,11 +4,17 @@ import com.mk.domain.Const
 import com.mk.domain.models.RanobeModel
 import org.json.JSONObject
 
-class LoadMostPopularsUseCase(private val ranobeRepositoryImpl: IRanobeRepository) : IReturnListRanobe {
-    override suspend fun execute(): List<RanobeModel> {
+class LoadMostPopularsUseCase(private val ranobeRepositoryImpl: IRanobeRepository) :
+    IReturnListRanobe {
+    override suspend fun execute(page: Int): List<RanobeModel> {
         val payload = JSONObject()
         payload.put("period", "new")
         payload.put("adult", 0)
-        return ranobeRepositoryImpl.fetchRanobeList(Const.mostViewedUri, Const.GET, null)
+        print(Const.MOST_POPULAR_URI + Const.NEXT_PAGE_URI + page)
+        return ranobeRepositoryImpl.fetchRanobeList(
+            Const.MOST_POPULAR_URI + Const.NEXT_PAGE_URI + page,
+            Const.GET,
+            null
+        )
     }
 }

@@ -8,12 +8,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationBarView
 import com.mk.data.themeSharedPref.PreferenceService
+import com.mk.domain.Const
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.ActivityMainBinding
 import com.mk.ranobereader.presentation.downloadScreen.DownloadScreen
 import com.mk.ranobereader.presentation.exploreScreen.ExploreScreen
 import com.mk.ranobereader.presentation.favouritesScreen.FavouritesScreen
 import com.mk.ranobereader.presentation.homeScreen.HomeScreen
+
 import com.mk.ranobereader.presentation.settingScreen.SettingScreen
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     var exploreScreen = ExploreScreen()
     var downloadScreen = DownloadScreen()
     var settingScreen = SettingScreen()
+    lateinit var lastFrame: Fragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -32,18 +35,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        pref = PreferenceService(getSharedPreferences(com.mk.core.Const.sharedTheme, MODE_PRIVATE))
+        pref = PreferenceService(getSharedPreferences(Const.sharedTheme, MODE_PRIVATE))
+    }
+
+    override fun onStart() {
+        super.onStart()
         setThemeSettings()
         setNavigationSettings()
     }
-
 
     private fun setNavigationSettings() {
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout, homeScreen).commit()
         binding!!.bottomNavigationView.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
-
                     setLayoutToFrame(homeScreen)
                     return@OnItemSelectedListener true
                 }
@@ -73,6 +78,8 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.popBackStack()
         }
         supportFragmentManager.beginTransaction().replace(R.id.frameLayout, frame).commit()
+        lastFrame = frame
+
     }
 
     private fun setThemeSettings() {

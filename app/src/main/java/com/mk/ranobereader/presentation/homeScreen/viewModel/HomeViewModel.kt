@@ -1,9 +1,10 @@
 package com.mk.ranobereader.presentation.homeScreen.viewModel
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.mk.core.Const.TAG
+import com.mk.domain.Const.TAG
 import com.mk.data.repositories.ranobes.RanobeRepositoryImpl
 import com.mk.domain.models.RanobeModel
 import com.mk.domain.useCase.LoadMostPopularsUseCase
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONException
 import java.util.concurrent.ExecutionException
 
-class HomeViewModel() : ViewModel() {
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var _mvWithDescriptionCard = MutableLiveData<ArrayList<RanobeModel>?>()
     private var _mvMostViewedLayoutPosition = MutableLiveData<Float>()
     private var _mvPopulars = MutableLiveData<ArrayList<RanobeModel>?>()
@@ -36,16 +37,16 @@ class HomeViewModel() : ViewModel() {
         try {
             val getMostViewed = LoadMostViewedUseCase(RanobeRepositoryImpl())
             val getMostPopular = LoadMostPopularsUseCase(RanobeRepositoryImpl())
-            val resultMostViewed: List<RanobeModel> = getMostViewed.execute()
-            val resultMostPopular: List<RanobeModel> = getMostPopular.execute()
+            val resultMostViewed: List<RanobeModel> = getMostViewed.execute(1)
+            val resultMostPopular: List<RanobeModel> = getMostPopular.execute(1)
             _mvPopulars.postValue(resultMostPopular as ArrayList<RanobeModel>)
             _mvWithDescriptionCard.postValue(resultMostViewed as ArrayList<RanobeModel>)
         } catch (e: ExecutionException) {
-            Log.d(TAG, "Error in init" + e.message)
+            // Log.d(TAG, "Error in init" + e.message)
         } catch (e: InterruptedException) {
-            Log.d(TAG, "Error in init" + e.message)
+            // Log.d(TAG, "Error in init" + e.message)
         } catch (e: JSONException) {
-            Log.d(TAG, "Error in init" + e.message)
+            // Log.d(TAG, "Error in init" + e.message)
         }
     }
 }

@@ -5,7 +5,12 @@ import com.mk.domain.models.RanobeModel
 
 class LoadListOfPopularsUseCase(private val ranobeRepository: IRanobeRepository) :
     IReturnListRanobe {
-    override suspend fun execute(): List<RanobeModel> {
-        return ranobeRepository.fetchRanobeList(Const.MostPopularUri, Const.POST, null)
+    override suspend fun execute(page: Int): List<RanobeModel> {
+        print(Const.MOST_POPULAR_URI + Const.NEXT_PAGE_URI + page)
+        return ranobeRepository.fetchRanobeList(
+            Const.MOST_POPULAR_URI + Const.NEXT_PAGE_URI + page,
+            Const.GET,
+            null
+        )
     }
 }
