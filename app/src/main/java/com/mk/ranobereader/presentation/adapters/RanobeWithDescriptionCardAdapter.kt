@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -13,6 +14,8 @@ import com.mk.domain.models.RanobeModel
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.RanobeCardWithDescriptionBinding
 import com.mk.ranobereader.presentation.adapters.RanobeWithDescriptionCardAdapter.RanobeWithDescriptionHolder
+import com.mk.ranobereader.presentation.homeScreen.GenresAdapter
+import com.mk.ranobereader.presentation.homeScreen.MarginItemDecoration
 
 class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescriptionHolder>() {
     var listOfRanobeWithDescription: MutableList<RanobeModel> = ArrayList()
@@ -43,6 +46,14 @@ class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescri
                 .transform(RoundedCorners(20))
                 .placeholder(R.drawable.black_image)
                 .into(binding.imageCover)
+            val genresAdapter = GenresAdapter()
+            val linearLayoutManager = LinearLayoutManager(binding.root.context)
+
+            binding.genresRecView.addItemDecoration(MarginItemDecoration(top = 2, left = 10, right = 10, bottom = 5))
+            linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+            binding.genresRecView.layoutManager = linearLayoutManager
+            genresAdapter.addGenres(ranobeModel.genres)
+            binding.genresRecView.adapter = genresAdapter
         }
 
     }
@@ -54,7 +65,7 @@ class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescri
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public fun addRanobe(ranobeModel: RanobeModel) {
+    fun addRanobe(ranobeModel: RanobeModel) {
         listOfRanobeWithDescription.add(ranobeModel)
         notifyDataSetChanged()
     }

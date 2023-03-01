@@ -38,21 +38,28 @@ class GenresAdapter : RecyclerView.Adapter<GenresAdapter.GenresHolder>() {
         return genresKeysList.size
     }
 
-    public fun addGenres(genre: Map<String, String>) {
+    fun addGenres(genre: Map<String, String>) {
         genresKeysList = genre.keys.toList()
         genresMap = genre
     }
 }
 
-class MarginItemDecoration(private val spaceSize: Int) : RecyclerView.ItemDecoration() {
+class MarginItemDecoration(
+    private val top: Int,
+    private val bottom: Int,
+    private val left: Int,
+    private val right: Int
+) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect, view: View,
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
         with(outRect) {
-            top = spaceSize
-            right = spaceSize
+            top = top
+            right = right
+            bottom = bottom
+            left = left
 
         }
     }

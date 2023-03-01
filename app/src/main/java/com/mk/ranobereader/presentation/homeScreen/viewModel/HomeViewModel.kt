@@ -4,8 +4,8 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.mk.domain.Const.TAG
 import com.mk.data.repositories.ranobes.RanobeRepositoryImpl
+import com.mk.domain.Const.TAG
 import com.mk.domain.models.RanobeModel
 import com.mk.domain.useCase.LoadMostPopularsUseCase
 import com.mk.domain.useCase.LoadMostViewedUseCase
@@ -27,18 +27,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         Log.d(TAG, "ViewModel Create")
         val coroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {
-            initTop()
+            loadData()
         }
-
     }
 
 
-    private suspend fun initTop() {
+    private suspend fun loadData() {
         try {
             val getMostViewed = LoadMostViewedUseCase(RanobeRepositoryImpl())
             val getMostPopular = LoadMostPopularsUseCase(RanobeRepositoryImpl())
             val resultMostViewed: List<RanobeModel> = getMostViewed.execute(1)
             val resultMostPopular: List<RanobeModel> = getMostPopular.execute(1)
+
             _mvPopulars.postValue(resultMostPopular as ArrayList<RanobeModel>)
             _mvWithDescriptionCard.postValue(resultMostViewed as ArrayList<RanobeModel>)
         } catch (e: ExecutionException) {
@@ -47,6 +47,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             // Log.d(TAG, "Error in init" + e.message)
         } catch (e: JSONException) {
             // Log.d(TAG, "Error in init" + e.message)
+        }
+    }
+
+    internal fun refreshData() {
+        _mvPopulars.postValue(null)
+        _mvMostViewedLayoutPosition.postValue(0.0f)
+        _mvWithDescriptionCard.postValue(null)
+        val coroutineScope = CoroutineScope(Dispatchers.Default)
+        coroutineScope.launch {
+            loadData()
         }
     }
 }

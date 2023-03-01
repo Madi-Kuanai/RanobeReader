@@ -53,7 +53,7 @@ class HomeScreen : Fragment() {
         StrictMode.setThreadPolicy(ThreadPolicy.Builder().permitAll().build())
         try {
             homeVM.mvLst.observe(viewLifecycleOwner) { ranobes ->
-                ranobes!!.forEach { ranobe ->
+                ranobes?.forEach { ranobe ->
                     createViewAndAddToLinear(ranobe)
                 }
             }
@@ -62,7 +62,7 @@ class HomeScreen : Fragment() {
                 binding.rootScroller.y = it
             }
             homeVM.mvPopulars.observe(viewLifecycleOwner) { ranobes ->
-                ranobes!!.forEach { ranobeModel ->
+                ranobes?.forEach { ranobeModel ->
                     createViewAndAddToRecycler(ranobeModel)
                 }
             }
@@ -72,6 +72,14 @@ class HomeScreen : Fragment() {
         }
         binding.allPopulars.setOnClickListener(openMostPopularList())
         binding.allMostViewed.setOnClickListener(openMostViewedList())
+        binding.pullToRefresh.setOnRefreshListener { refreshData() }
+    }
+
+    private fun refreshData() {
+        binding.popularsRecView.removeAllViews()
+        binding.mostLikedLayout.removeAllViews()
+        homeVM.refreshData()
+        binding.pullToRefresh.isRefreshing = false
     }
 
     private fun openMostViewedList(): View.OnClickListener {
@@ -95,6 +103,7 @@ class HomeScreen : Fragment() {
         homeVM.mvMostViewedLayoutPosition.value = binding.rootScroller.y
 
     }
+
     override fun onDestroy() {
         super.onDestroy()
     }
@@ -115,7 +124,7 @@ class HomeScreen : Fragment() {
             false
         )
 
-        val linearLayoutManager = LinearLayoutManager(context)
+            val linearLayoutManager = LinearLayoutManager(context)
         (view!!.findViewById<View>(R.id.title) as TextView).text = ranobeModel.title
         (view.findViewById<View>(R.id.description) as TextView).text = ranobeModel.description
         (view.findViewById<View>(R.id.imageCover) as ImageView).minimumHeight =
@@ -129,7 +138,7 @@ class HomeScreen : Fragment() {
             .placeholder(R.drawable.black_image)
             .into((view.findViewById<View>(R.id.imageCover) as ImageView))
         val recView = view.findViewById<RecyclerView>(R.id.genresRecView)
-        recView.addItemDecoration(MarginItemDecoration(16))
+        recView.addItemDecoration(MarginItemDecoration(top = 2, left = 5, right = 5, bottom = 5))
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         recView.layoutManager = linearLayoutManager
         recView.adapter = genresAdapter

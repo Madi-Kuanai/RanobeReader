@@ -8,7 +8,7 @@ import org.json.JSONObject
 
 class LoadMostViewedUseCase(
     private val IRanobeRepository: IRanobeRepository,
-) : IReturnListRanobe {
+) : IReturnListRanobeUseCase {
     override suspend fun execute(page: Int): List<RanobeModel> {
         val payload = JSONObject()
         payload.put("period", "new")

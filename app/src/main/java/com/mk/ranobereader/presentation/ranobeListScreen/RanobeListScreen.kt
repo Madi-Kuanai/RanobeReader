@@ -14,18 +14,20 @@ import com.mk.domain.Const.EXTRA_TYPE
 import com.mk.domain.Const.MOST_POPULAR_TYPE
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.RanobeModel
-import com.mk.domain.useCase.IReturnListRanobe
+import com.mk.domain.useCase.IReturnListRanobeUseCase
 import com.mk.domain.useCase.LoadMostPopularsUseCase
 import com.mk.domain.useCase.LoadMostViewedUseCase
 import com.mk.ranobereader.databinding.ActivityRanobeListScreenBinding
 import com.mk.ranobereader.presentation.adapters.RanobeWithDescriptionCardAdapter
+import com.mk.ranobereader.presentation.homeScreen.MarginItemDecoration
 
 class RanobeListScreen : AppCompatActivity() {
     lateinit var binding: ActivityRanobeListScreenBinding
     lateinit var listScreenVM: RanobeListViewModel
     val descriptionCardAdapter = RanobeWithDescriptionCardAdapter()
     lateinit var linearLayoutManager: LinearLayoutManager
-    lateinit var iReturnListRanobe: IReturnListRanobe
+    lateinit var iReturnListRanobeUseCase: IReturnListRanobeUseCase
+    val lstOfNameOfRanobeTitle: ArrayList<String> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRanobeListScreenBinding.inflate(layoutInflater)
@@ -40,7 +42,7 @@ class RanobeListScreen : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        iReturnListRanobe = if (intent.getStringExtra(EXTRA_TYPE) == MOST_POPULAR_TYPE) {
+        iReturnListRanobeUseCase = if (intent.getStringExtra(EXTRA_TYPE) == MOST_POPULAR_TYPE) {
             Log.d(TAG, "GET")
             LoadMostPopularsUseCase(RanobeRepositoryImpl())
         } else {
@@ -49,23 +51,32 @@ class RanobeListScreen : AppCompatActivity() {
         }
 
         binding.goBackSign.setOnClickListener { finish() }
+        binding.pullToRefresh.setOnRefreshListener { refreshData() }
         descriptionCardAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         setViewModelObservers()
     }
 
+    private fun refreshData() {
+        binding.listRanobeRec.removeAllViews()
+        listScreenVM.refreshData()
+        binding.pullToRefresh.isRefreshing = false
+    }
+
     private fun setViewModelObservers() {
         listScreenVM = ViewModelProvider(
             this,
-            RanobeListViewModelFactory(iReturnListRanobe)
+            RanobeListViewModelFactory(iReturnListRanobeUseCase)
         )[RanobeListViewModel::class.java]
 
         listScreenVM.listRanobe.observe(this, Observer { ranobes ->
             ranobes.let {
                 binding.progressBar.visibility = View.GONE
-                it.forEach { ranobeModel ->
-                    Log.d(TAG, ranobeModel.title)
-                    addRanobe(ranobeModel)
+                it?.forEach { ranobeModel ->
+                    if (ranobeModel.title !in lstOfNameOfRanobeTitle) {
+                        addRanobe(ranobeModel)
+                        lstOfNameOfRanobeTitle.add(ranobeModel.title)
+                    }
                 }
             }
         })
@@ -89,6 +100,7 @@ class RanobeListScreen : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun addRanobe(ranobeModel: RanobeModel) {
         descriptionCardAdapter.addRanobe(ranobeModel)
+        binding.listRanobeRec.addItemDecoration(MarginItemDecoration(top = 2, left = 3, right = 3, bottom = 5))
         descriptionCardAdapter.notifyDataSetChanged()
     }
 

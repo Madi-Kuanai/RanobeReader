@@ -5,14 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.RanobeModel
-import com.mk.domain.useCase.IReturnListRanobe
+import com.mk.domain.useCase.IReturnListRanobeUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RanobeListViewModel(private var iReturnListRanobe: IReturnListRanobe) : ViewModel() {
-    private val _listRanobe = MutableLiveData<List<RanobeModel>>()
-    val listRanobe: MutableLiveData<List<RanobeModel>> = _listRanobe
+class RanobeListViewModel(private var iReturnListRanobeUseCase: IReturnListRanobeUseCase) :
+    ViewModel() {
+    private val _listRanobe = MutableLiveData<Set<RanobeModel>?>()
+    val listRanobe: MutableLiveData<Set<RanobeModel>?> = _listRanobe
     val screenPos = MutableLiveData<Int>()
     var pageOfList = MutableLiveData<Int>(1)
 
@@ -26,18 +27,27 @@ class RanobeListViewModel(private var iReturnListRanobe: IReturnListRanobe) : Vi
                 loadData()
             }
         }
-        screenPos.observeForever {
-            Log.d(TAG, it.toString())
-        }
     }
 
     private suspend fun loadData() {
         Log.d(TAG, "LoadData")
         pageOfList.value?.let { it ->
-            iReturnListRanobe.execute(it).let {
+            iReturnListRanobeUseCase.execute(it).let {
                 Log.d(TAG, it.toString())
-                _listRanobe.postValue(it)
+                it.forEach { ranobeModel ->
+                    _listRanobe.postValue(it.toSet())
+                }
             }
+        }
+    }
+
+    internal fun refreshData() {
+        _listRanobe.postValue(null)
+        pageOfList.postValue(1)
+        screenPos.postValue(0)
+        val coroutineScope = CoroutineScope(Dispatchers.Default)
+        coroutineScope.launch {
+            loadData()
         }
     }
 }
