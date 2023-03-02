@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.7">
+    <bytecodeTargetLevel target="1.8">
       <module name="RanobeReader.app" target="11" />
       <module name="RanobeReader.core" target="11" />
       <module name="RanobeReader.data" target="11" />

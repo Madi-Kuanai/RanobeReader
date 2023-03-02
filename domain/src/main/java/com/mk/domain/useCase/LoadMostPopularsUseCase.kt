@@ -15,6 +15,6 @@ class LoadMostPopularsUseCase(private val ranobeRepositoryImpl: IRanobeRepositor
             Const.MOST_POPULAR_URI + Const.NEXT_PAGE_URI + page,
             Const.GET,
             null
-        )
+        ) as List<RanobeModel>
     }
 }

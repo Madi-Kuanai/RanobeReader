@@ -18,6 +18,6 @@ class LoadMostViewedUseCase(
             Const.MOST_VIEWED_URI + Const.NEXT_PAGE_URI + page,
             Const.GET,
             null
-        )
+        ) as List<RanobeModel>
     }
 }

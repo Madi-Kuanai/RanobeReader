@@ -49,7 +49,14 @@ class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescri
             val genresAdapter = GenresAdapter()
             val linearLayoutManager = LinearLayoutManager(binding.root.context)
 
-            binding.genresRecView.addItemDecoration(MarginItemDecoration(top = 2, left = 10, right = 10, bottom = 5))
+            binding.genresRecView.addItemDecoration(
+                MarginItemDecoration(
+                    top = 2,
+                    left = 10,
+                    right = 10,
+                    bottom = 5
+                )
+            )
             linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
             binding.genresRecView.layoutManager = linearLayoutManager
             genresAdapter.addGenres(ranobeModel.genres)

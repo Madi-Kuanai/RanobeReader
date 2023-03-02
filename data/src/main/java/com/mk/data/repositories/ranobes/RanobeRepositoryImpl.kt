@@ -13,7 +13,7 @@ class RanobeRepositoryImpl : IRanobeRepository {
         url: String,
         method: String,
         payload: JSONObject?
-    ): List<RanobeModel> {
+    ): MutableList<RanobeModel> {
         var doc: Document? = null
         // URL of the webpage to parse
         if (method == Const.GET) {
@@ -65,7 +65,7 @@ class RanobeRepositoryImpl : IRanobeRepository {
             try {
                 for (aElement in liElement.getElementsByClass("meta").first()!!
                     .getElementsByTag("p")[3].getElementsByTag("a")) {
-                    genres.put(aElement.text(), aElement.attr("href"))
+                    genres[aElement.text()] = aElement.attr("href")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
