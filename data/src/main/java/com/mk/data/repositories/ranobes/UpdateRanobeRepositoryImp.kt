@@ -6,12 +6,15 @@ import com.mk.domain.models.UpdatedRanobeModel
 import com.mk.domain.useCase.IUpdateRanobeRepository
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import kotlin.math.log
 
 class UpdateRanobeRepositoryImp : IUpdateRanobeRepository {
     override suspend fun fetchRanobeList(
         url: String,
     ): MutableList<UpdatedRanobeModel> {
+        Log.d(TAG, url)
         val doc: Document? = Jsoup.connect(url).get()
+        Log.d(TAG, doc?.body().toString())
         val ulElement = doc?.select("ul.imged")?.first()
         val liElements = ulElement?.select("li")
         val backgroundImageRegex = Regex("background-image:url\\('(.+)'\\);")
@@ -37,8 +40,7 @@ class UpdateRanobeRepositoryImp : IUpdateRanobeRepository {
                 val linkToLastUpdate =
                     liElement.select("span").first()?.select("a")?.attr("href").toString()
                 val dateOfUpdate =
-                    liElement.select("p")[1].select("span")?.first()?.text().toString()
-                Log.d(TAG, dateOfUpdate)
+                    liElement.select("p")[1].select("span").first()?.text().toString()
                 ranobeModel.add(
                     UpdatedRanobeModel(
                         title = title,
@@ -52,8 +54,6 @@ class UpdateRanobeRepositoryImp : IUpdateRanobeRepository {
                 )
             }
         }
-
-        Log.d(TAG, ranobeModel.toString())
         return ranobeModel
     }
 }

@@ -17,6 +17,15 @@
         <item name="appbarColor">#1C1B20</item>
         <item name="android:textColor">@color/white</item>
         <item name="cardViewColor">?colorPrimary</item>
+        <item name="textColor">@color/white</item>
+    </style>
+    <style name="TextAppearance.MyApp.Title.Collapsed" parent="android:TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="TextAppearance.MyApp.Title.Expanded" parent="android:TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

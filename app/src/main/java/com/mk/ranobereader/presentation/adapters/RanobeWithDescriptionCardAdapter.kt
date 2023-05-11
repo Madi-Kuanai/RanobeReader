@@ -1,6 +1,8 @@
 package com.mk.ranobereader.presentation.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +12,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.mk.domain.Const
+import com.mk.domain.models.IRanobe
 import com.mk.domain.models.RanobeModel
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.RanobeCardWithDescriptionBinding
 import com.mk.ranobereader.presentation.adapters.RanobeWithDescriptionCardAdapter.RanobeWithDescriptionHolder
 import com.mk.ranobereader.presentation.homeScreen.GenresAdapter
 import com.mk.ranobereader.presentation.homeScreen.MarginItemDecoration
+import com.mk.ranobereader.presentation.ranobeInfoScreen.RanobeInfoScreen
 
 class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescriptionHolder>() {
     var listOfRanobeWithDescription: MutableList<RanobeModel> = ArrayList()
@@ -61,6 +66,15 @@ class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescri
             binding.genresRecView.layoutManager = linearLayoutManager
             genresAdapter.addGenres(ranobeModel.genres)
             binding.genresRecView.adapter = genresAdapter
+            binding.root.setOnClickListener {
+                Log.d(Const.TAG, "Click")
+                val intent = Intent(
+                    binding.root.context,
+                    RanobeInfoScreen()::class.java
+                )
+                intent.putExtra(Const.RANOBE_MODEL, ranobeModel)
+                binding.root.context.startActivity(intent)
+            }
         }
 
     }

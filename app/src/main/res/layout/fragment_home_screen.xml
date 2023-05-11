@@ -66,6 +66,7 @@
                         app:layout_constraintVertical_bias="0.015" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayout3"
                         android:layout_width="0dp"
                         android:layout_height="250dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -88,6 +89,23 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/updatesText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="Все >"
+                        android:textColor="#666"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:typeface="sans"
+                        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.95"
+                        app:layout_constraintStart_toEndOf="@+id/updates"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -179,6 +197,7 @@
                     android:id="@+id/mostLikedLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constraintVertical_bias="0.05"
                     android:nestedScrollingEnabled="true"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"

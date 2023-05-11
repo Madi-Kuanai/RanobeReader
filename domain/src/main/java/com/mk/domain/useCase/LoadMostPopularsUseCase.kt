@@ -10,7 +10,6 @@ class LoadMostPopularsUseCase(private val ranobeRepositoryImpl: IRanobeRepositor
         val payload = JSONObject()
         payload.put("period", "new")
         payload.put("adult", 0)
-        print(Const.MOST_POPULAR_URI + Const.NEXT_PAGE_URI + page)
         return ranobeRepositoryImpl.fetchRanobeList(
             Const.MOST_POPULAR_URI + Const.NEXT_PAGE_URI + page,
             Const.GET,

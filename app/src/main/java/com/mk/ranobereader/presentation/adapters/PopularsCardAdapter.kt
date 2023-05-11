@@ -1,6 +1,7 @@
 package com.mk.ranobereader.presentation.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +11,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.mk.domain.Const
 import com.mk.domain.models.RanobeModel
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.PopularsCardBinding
+import com.mk.ranobereader.presentation.ranobeInfoScreen.RanobeInfoScreen
 
 class PopularsCardAdapter : RecyclerView.Adapter<PopularsCardAdapter.PopularsCardViewHolder>() {
     var listOfPopularRanobe: MutableList<RanobeModel> = ArrayList()
@@ -28,7 +31,11 @@ class PopularsCardAdapter : RecyclerView.Adapter<PopularsCardAdapter.PopularsCar
                 .transform(RoundedCorners(20))
                 .placeholder(R.drawable.black_image)
                 .into(binding.imageCover)
-
+            binding.root.setOnClickListener {
+                val intent = Intent(binding.root.context, RanobeInfoScreen()::class.java)
+                intent.putExtra(Const.RANOBE_MODEL, ranobeModel)
+                binding.root.context.startActivity(intent)
+            }
         }
     }
 

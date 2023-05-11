@@ -1,8 +1,12 @@
 package com.mk.ranobereader.presentation
 
 
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.widget.CompoundButton
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -15,8 +19,8 @@ import com.mk.ranobereader.presentation.downloadScreen.DownloadScreen
 import com.mk.ranobereader.presentation.exploreScreen.ExploreScreen
 import com.mk.ranobereader.presentation.favouritesScreen.FavouritesScreen
 import com.mk.ranobereader.presentation.homeScreen.HomeScreen
-
 import com.mk.ranobereader.presentation.settingScreen.SettingScreen
+
 
 class MainActivity : AppCompatActivity() {
     var binding: ActivityMainBinding? = null
@@ -27,11 +31,22 @@ class MainActivity : AppCompatActivity() {
     var downloadScreen = DownloadScreen()
     var settingScreen = SettingScreen()
     lateinit var lastFrame: Fragment
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding!!.root)
-        init()
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+
+        if (networkInfo != null && networkInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+            binding = ActivityMainBinding.inflate(layoutInflater)
+            setContentView(binding!!.root)
+            init()
+        } else {
+            setContentView(R.layout.internet_error)
+        }
+
     }
 
     private fun init() {
@@ -83,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setThemeSettings() {
-        binding!!.themeController.isChecked = pref!!.isNightTheme
+        binding!!.themeController.isChecked = pref?.isNightTheme ?: false
         AppCompatDelegate.setDefaultNightMode(if (pref!!.isNightTheme) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
         binding!!.themeController.setOnCheckedChangeListener { _: CompoundButton?, b: Boolean ->
             if (b) {

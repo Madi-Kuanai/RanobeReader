@@ -1,17 +1,21 @@
 package com.mk.domain.models
 
+import java.io.Serializable
+
 
 open class RanobeModel(
     title: String, imageLink: String,
-    var linkToRanobe: String, var author: String, var description: String,
+    linkToRanobe: String, var author: String, description: String,
     var numberOfChapters: String, var numberOfPage: String,
     var rating: String,
     var ratingOfTranslate: String, likes: String, var stateOfTranslation: String,
     var genres: Map<String, String>, var tags: Map<String, String>
-) {
-    var title: String =
-        title.split("/").toTypedArray()[title.split("/").toTypedArray().size - 1]
-    var imageLink: String = "https://tl.rulate.ru$imageLink"
+) : IRanobe(
+    title = title.split("/").toTypedArray()[title.split("/").toTypedArray().size - 1],
+    description,
+    imageLink = "https://tl.rulate.ru$imageLink",
+    linkToRanobe = "https://tl.rulate.ru$linkToRanobe"
+), Serializable {
     var likes: Int = likes.toInt()
     override fun toString(): String {
         return "RanobeModel{" +

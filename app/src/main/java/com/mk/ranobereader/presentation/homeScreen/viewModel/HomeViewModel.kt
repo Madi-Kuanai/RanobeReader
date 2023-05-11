@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mk.data.repositories.ranobes.RanobeRepositoryImpl
 import com.mk.data.repositories.ranobes.UpdateRanobeRepositoryImp
-import com.mk.domain.Const
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.RanobeModel
 import com.mk.domain.models.UpdatedRanobeModel
@@ -25,15 +24,19 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var _mvMostViewedLayoutPosition = MutableLiveData<Float>()
     private var _mvPopulars = MutableLiveData<ArrayList<RanobeModel>?>()
     private var _mvUpdates = MutableLiveData<ArrayList<UpdatedRanobeModel>>()
-    internal val mvLst: MutableLiveData<ArrayList<RanobeModel>?> = _mvWithDescriptionCard
+    private var _mvUpdatesPosition = MutableLiveData<Float>()
+    private var _mvPopularsPosition = MutableLiveData<Float>()
+    internal val mvWithDescription: MutableLiveData<ArrayList<RanobeModel>?> = _mvWithDescriptionCard
     internal val mvMostViewedLayoutPosition = _mvMostViewedLayoutPosition
     internal val mvPopulars: MutableLiveData<ArrayList<RanobeModel>?> = _mvPopulars
     internal val mvUpdates = _mvUpdates
+    internal val mvUpdatesPosition = _mvUpdatesPosition
+    internal val mvPopularsPosition = _mvPopularsPosition
 
     init {
         Log.d(TAG, "ViewModel Create")
-        val coroutineScope = CoroutineScope(Dispatchers.IO)
-        coroutineScope.launch {
+
+        CoroutineScope(Dispatchers.IO).launch {
             loadData()
         }
 
@@ -41,19 +44,22 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             UpdateRanobeRepositoryImp().fetchRanobeList(
                 "https://tl.rulate.ru/site/login?page=",
 
-            )
+                )
         }
     }
 
 
     private suspend fun loadData() {
         try {
+
             val getMostViewed = LoadMostViewedUseCase(RanobeRepositoryImpl())
             val getMostPopular = LoadMostPopularsUseCase(RanobeRepositoryImpl())
             val getUpdates = LoadUpdatedRanobeUseCase(UpdateRanobeRepositoryImp())
+
             val resultMostViewed: List<RanobeModel> = getMostViewed.execute(1)
             val resultMostPopular: List<RanobeModel> = getMostPopular.execute(1)
             val resultUpdates: List<UpdatedRanobeModel> = getUpdates.execute(1)
+
             _mvPopulars.postValue(resultMostPopular as ArrayList<RanobeModel>)
             _mvWithDescriptionCard.postValue(resultMostViewed as ArrayList<RanobeModel>)
             _mvUpdates.postValue(resultUpdates as ArrayList<UpdatedRanobeModel>)
@@ -69,6 +75,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     internal fun refreshData() {
         _mvPopulars.postValue(null)
         _mvMostViewedLayoutPosition.postValue(0.0f)
+        _mvPopularsPosition.postValue(0.0f)
+        _mvUpdatesPosition.postValue(0.0f)
         _mvWithDescriptionCard.postValue(null)
         val coroutineScope = CoroutineScope(Dispatchers.Default)
         coroutineScope.launch {

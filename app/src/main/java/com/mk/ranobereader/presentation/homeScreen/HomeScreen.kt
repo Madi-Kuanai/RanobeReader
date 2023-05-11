@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.mk.domain.Const
 import com.mk.domain.Const.EXTRA_TYPE
 import com.mk.domain.Const.MOST_POPULAR_TYPE
 import com.mk.domain.Const.MOST_VIEWED_TYPE
@@ -31,6 +32,7 @@ import com.mk.ranobereader.presentation.adapters.PopularsCardAdapter
 import com.mk.ranobereader.presentation.adapters.UpdateCardAdapter
 import com.mk.ranobereader.presentation.homeScreen.viewModel.HomeViewModel
 import com.mk.ranobereader.presentation.homeScreen.viewModel.HomeViewModelFactory
+import com.mk.ranobereader.presentation.ranobeInfoScreen.RanobeInfoScreen
 import com.mk.ranobereader.presentation.ranobeListScreen.RanobeListScreen
 
 class HomeScreen : Fragment() {
@@ -63,13 +65,19 @@ class HomeScreen : Fragment() {
         binding.updatesRecView.layoutManager = gridLayout
         binding.updatesRecView.adapter = updatesCardAdapter
         try {
-            homeVM.mvLst.observe(viewLifecycleOwner) { ranobes ->
-                ranobes?.forEach { ranobe ->
+            homeVM.mvWithDescription.observe(viewLifecycleOwner) { ranobes ->
+                ranobes?.slice(0..6)?.forEach { ranobe ->
                     createViewAndAddToLinear(ranobe)
                 }
             }
             homeVM.mvMostViewedLayoutPosition.observe(viewLifecycleOwner) {
                 binding.rootScroller.y = it
+            }
+            homeVM.mvPopularsPosition.observe(viewLifecycleOwner) {
+                binding.popularsRecView.x = it
+            }
+            homeVM.mvUpdatesPosition.observe(viewLifecycleOwner) {
+                binding.updatesRecView.scrollToPosition(it.toInt())
             }
             homeVM.mvPopulars.observe(viewLifecycleOwner) { ranobes ->
                 ranobes?.forEach { ranobeModel ->
@@ -80,14 +88,15 @@ class HomeScreen : Fragment() {
                 ranobes.forEach { updatedRanobeModel ->
                     updatesCardAdapter.addCard(updatedRanobeModel)
                 }
-
             }
+
         } catch (e: Exception) {
             Log.d(TAG, e.toString())
 
         }
         binding.allPopulars.setOnClickListener(openMostPopularList())
         binding.allMostViewed.setOnClickListener(openMostViewedList())
+
         binding.pullToRefresh.setOnRefreshListener { refreshData() }
 
     }
@@ -150,7 +159,47 @@ class HomeScreen : Fragment() {
         recView.layoutManager = linearLayoutManager
         recView.adapter = genresAdapter
         genresAdapter.addGenres(ranobeModel.genres)
+        view.setOnClickListener {
+            Log.d(TAG, "Click")
+            val intent = Intent(
+                view.context,
+                RanobeInfoScreen()::class.java
+            )
+            intent.putExtra(Const.RANOBE_MODEL, ranobeModel)
+            binding.root.context.startActivity(intent)
+        }
         binding.mostLikedLayout.addView(view)
     }
 
 }
+/*class CheckNetworkConnection (private val connectivityManager: ConnectivityManager) : LiveData<Boolean>() {
+
+    constructor(application: Application) : this(application.getSystemService(Context.CONNECTIVITY_SERVICE) as  ConnectivityManager)
+    private val networkCallback = @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+
+    object : ConnectivityManager.NetworkCallback(){
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            postValue(true)
+        }
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            postValue(false)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onActive() {
+        super.onActive()
+        val builder = NetworkRequest.Builder()
+        connectivityManager.registerNetworkCallback(builder.build(),networkCallback)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onInactive() {
+        super.onInactive()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
+}*/

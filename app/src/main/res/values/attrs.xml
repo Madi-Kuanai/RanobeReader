@@ -2,4 +2,5 @@
 <resources>
     <attr name="appbarColor" format="color"/>
     <attr name="cardViewColor" format="color"/>
+    <attr name="textColor" format="color"/>
 </resources>

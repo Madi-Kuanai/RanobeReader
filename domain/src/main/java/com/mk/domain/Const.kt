@@ -16,5 +16,7 @@ object Const {
     const val MOST_POPULAR_TYPE = "MOST_POPULAR"
     const val MOST_VIEWED_TYPE = "MOST_VIEWED"
     const val MAIN_PAGE_LINK = "https://tl.rulate.ru/site/login?page="
+    const val RANOBE_MODEL = "ranobeModel"
+
 
 }

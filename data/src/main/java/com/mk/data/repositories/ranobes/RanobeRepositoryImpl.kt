@@ -12,6 +12,7 @@ class RanobeRepositoryImpl : IRanobeRepository {
     override suspend fun fetchRanobeList(
         url: String,
         method: String,
+
         payload: JSONObject?
     ): MutableList<RanobeModel> {
         var doc: Document? = null
@@ -32,6 +33,7 @@ class RanobeRepositoryImpl : IRanobeRepository {
 
             doc = Jsoup.connect(url).data(header).post()
         }
+
         val ulElement = doc!!.select("ul.search-results").first()
 
         val liElements = ulElement!!.select("li")

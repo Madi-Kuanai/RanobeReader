@@ -3,15 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Hoaqin/.gradle/caches/transforms-3/73c48b51d5e7d67a89acb657ca229f49/transformed/jetified-folioreader-0.5.4/res/layout/progress_dialog.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/drawable/genres_card_decorator.xml" value="0.1935" />
+        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout-v28/activity_main.xml" value="0.3625" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/activity_ranobe_info_screen.xml" value="0.3625" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/activity_ranobe_list_screen.xml" value="0.3625" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_download_screen.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_favourites_screen.xml" value="0.18541666666666667" />
-        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_home_screen.xml" value="0.33" />
+        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_home_screen.xml" value="0.25" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_ranobe_list_screen.xml" value="0.3625" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/fragment_setting_screen.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/genres_card.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/internet_error.xml" value="0.27586206896551724" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/populars_card.xml" value="0.33" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/ranobe_card_with_description.xml" value="0.33" />
         <entry key="..\:/Users/Hoaqin/AndroidStudioProjects/RanobeReader/app/src/main/res/layout/update_card.xml" value="0.33" />

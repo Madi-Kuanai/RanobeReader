@@ -27,7 +27,7 @@
         app:liftOnScroll="false">
 
 
-        <Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -61,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Reader"
+                    android:text="Route"
                     android:textFontWeight="100"
                     android:textSize="20sp"
                     app:fontFamily="sans-serif-black"
@@ -102,7 +102,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        </Toolbar>
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
