@@ -1,14 +1,16 @@
 package com.mk.data.repositories.ranobes
 
+import android.util.Log
 import com.mk.domain.Const
+import com.mk.domain.Const.TAG
 import com.mk.domain.models.RanobeModel
-import com.mk.domain.useCase.IRanobeRepository
+import com.mk.domain.useCase.IRanobeFromListRepository
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 
-class RanobeRepositoryImpl : IRanobeRepository {
+class RanobeFromListRepositoryImpl : IRanobeFromListRepository {
     override suspend fun fetchRanobeList(
         url: String,
         method: String,
@@ -55,9 +57,7 @@ class RanobeRepositoryImpl : IRanobeRepository {
                 "title",
                 "Кол-во глав всего / Кол-во платных глав"
             ).text()
-            val numberOfPage =
-                liElement.getElementsByAttributeValue("title", "Кол-во страниц").text()
-            val rating = liElement.getElementsByAttributeValue("title", "Рейтинг").text()
+            val rating = liElement.getElementsByAttributeValue("title", "Рейтинг").text().split(" / ")
             val ratingOfTranslate =
                 liElement.getElementsByAttributeValue("title", "Качество перевода").text()
             val like: String = liElement.getElementsByAttributeValue("title", "Лайки").text()
@@ -89,7 +89,6 @@ class RanobeRepositoryImpl : IRanobeRepository {
                 author,
                 description,
                 numberOfChapter,
-                numberOfPage,
                 rating,
                 ratingOfTranslate,
                 like.replace(" ", "").toInt().toString(),

@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mk.data.repositories.ranobes.RanobeRepositoryImpl
+import com.mk.data.repositories.ranobes.RanobeFromListRepositoryImpl
 import com.mk.domain.Const.EXTRA_TYPE
 import com.mk.domain.Const.MOST_POPULAR_TYPE
 import com.mk.domain.Const.TAG
@@ -44,10 +44,10 @@ class RanobeListScreen : AppCompatActivity() {
         super.onStart()
         iReturnListRanobeUseCase = if (intent.getStringExtra(EXTRA_TYPE) == MOST_POPULAR_TYPE) {
             Log.d(TAG, "GET")
-            LoadMostPopularsUseCase(RanobeRepositoryImpl())
+            LoadMostPopularsUseCase(RanobeFromListRepositoryImpl())
         } else {
             Log.d(TAG, "POST")
-            LoadMostViewedUseCase(RanobeRepositoryImpl())
+            LoadMostViewedUseCase(RanobeFromListRepositoryImpl())
         }
 
         binding.goBackSign.setOnClickListener { finish() }
@@ -75,7 +75,7 @@ class RanobeListScreen : AppCompatActivity() {
                 it?.forEach { ranobeModel ->
                     if (ranobeModel.title !in lstOfNameOfRanobeTitle) {
                         addRanobe(ranobeModel)
-                        lstOfNameOfRanobeTitle.add(ranobeModel.title)
+                        lstOfNameOfRanobeTitle.add(ranobeModel.title.toString())
                     }
                 }
             }

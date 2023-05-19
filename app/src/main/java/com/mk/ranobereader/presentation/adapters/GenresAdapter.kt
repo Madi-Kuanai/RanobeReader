@@ -38,9 +38,9 @@ class GenresAdapter : RecyclerView.Adapter<GenresAdapter.GenresHolder>() {
         return genresKeysList.size
     }
 
-    fun addGenres(genre: Map<String, String>) {
+    fun addGenres(genre: Map<String, String?>) {
         genresKeysList = genre.keys.toList()
-        genresMap = genre
+        genresMap = genre as Map<String, String>
     }
 }
 

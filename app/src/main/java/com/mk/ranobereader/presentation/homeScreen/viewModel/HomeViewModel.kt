@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.mk.data.repositories.ranobes.RanobeRepositoryImpl
+import com.mk.data.repositories.ranobes.RanobeFromListRepositoryImpl
 import com.mk.data.repositories.ranobes.UpdateRanobeRepositoryImp
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.RanobeModel
@@ -52,8 +52,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun loadData() {
         try {
 
-            val getMostViewed = LoadMostViewedUseCase(RanobeRepositoryImpl())
-            val getMostPopular = LoadMostPopularsUseCase(RanobeRepositoryImpl())
+            val getMostViewed = LoadMostViewedUseCase(RanobeFromListRepositoryImpl())
+            val getMostPopular = LoadMostPopularsUseCase(RanobeFromListRepositoryImpl())
             val getUpdates = LoadUpdatedRanobeUseCase(UpdateRanobeRepositoryImp())
 
             val resultMostViewed: List<RanobeModel> = getMostViewed.execute(1)

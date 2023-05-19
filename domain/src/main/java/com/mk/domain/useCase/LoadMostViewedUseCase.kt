@@ -7,7 +7,7 @@ import com.mk.domain.models.RanobeModel
 import org.json.JSONObject
 
 class LoadMostViewedUseCase(
-    private val IRanobeRepository: IRanobeRepository,
+    private val IRanobeRepository: IRanobeFromListRepository,
 ) : IReturnListRanobeUseCase {
     override suspend fun execute(page: Int): List<RanobeModel> {
         val payload = JSONObject()

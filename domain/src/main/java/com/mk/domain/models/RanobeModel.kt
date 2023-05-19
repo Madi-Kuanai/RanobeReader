@@ -4,19 +4,19 @@ import java.io.Serializable
 
 
 open class RanobeModel(
-    title: String, imageLink: String,
-    linkToRanobe: String, var author: String, description: String,
-    var numberOfChapters: String, var numberOfPage: String,
-    var rating: String,
-    var ratingOfTranslate: String, likes: String, var stateOfTranslation: String,
-    var genres: Map<String, String>, var tags: Map<String, String>
+    title: String?, imageLink: String?,
+    linkToRanobe: String?, var author: String?, description: String?,
+    var numberOfChapters: String?,
+    var rating: List<Any>,
+    var ratingOfTranslate: String?, likes: String?, var stateOfTranslation: String?,
+    var genres: Map<String, String?>, var tags: Map<String, String?>
 ) : IRanobe(
-    title = title.split("/").toTypedArray()[title.split("/").toTypedArray().size - 1],
+    title = title?.split("/")?.toTypedArray()?.get(title.split("/").toTypedArray().size - 1),
     description,
     imageLink = "https://tl.rulate.ru$imageLink",
     linkToRanobe = "https://tl.rulate.ru$linkToRanobe"
 ), Serializable {
-    var likes: Int = likes.toInt()
+    var likes: Int = likes?.toInt() ?: 0
     override fun toString(): String {
         return "RanobeModel{" +
                 "name='" + title + '\'' +
@@ -25,7 +25,6 @@ open class RanobeModel(
                 ", author='" + author + '\'' +
                 ", description='" + description + '\'' +
                 ", numberOfChapters='" + numberOfChapters + '\'' +
-                ", numberOfPage='" + numberOfPage + '\'' +
                 ", Rating='" + rating + '\'' +
                 ", RatingOfTranslate='" + ratingOfTranslate + '\'' +
                 ", likes=" + likes +
@@ -34,5 +33,4 @@ open class RanobeModel(
                 ", tags=" + tags +
                 '}'
     }
-
 }

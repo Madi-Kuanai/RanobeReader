@@ -4,7 +4,7 @@ import com.mk.domain.models.RanobeModel
 import com.mk.domain.models.UpdatedRanobeModel
 import org.json.JSONObject
 
-interface IRanobeRepository {
+interface IRanobeFromListRepository {
     suspend fun fetchRanobeList(
         url: String,
         method: String,

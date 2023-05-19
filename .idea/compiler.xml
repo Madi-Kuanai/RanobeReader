@@ -2,9 +2,9 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
-      <module name="RanobeReader.app" target="11" />
+      <module name="RanobeReader.app" target="17" />
       <module name="RanobeReader.core" target="11" />
-      <module name="RanobeReader.data" target="11" />
+      <module name="RanobeReader.data" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
