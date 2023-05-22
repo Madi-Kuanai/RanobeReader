@@ -81,38 +81,81 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TableLayout
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline1"
-                    app:layout_constraintStart_toStartOf="@+id/guideline"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TableRow
+                    <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        >
+                        android:layout_gravity="center">
 
-                        <TextView
-                            android:layout_width="match_parent"
+                        <TableLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_column="1"
-                            android:text="afs" />
+                            android:layout_gravity="center">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_column="2"
-                            android:text="afs" />
+                            <!-- TableRow 1 -->
+                            <TableRow
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_column="3"
-                            android:text="afs" />
-                    </TableRow>
-                </TableLayout>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Рейтинг" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="120dp"
+                                    android:text="Лайки" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Главы" />
+                            </TableRow>
+
+                            <!-- TableRow 2 -->
+                            <TableRow
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:id="@+id/ratingText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="rating" />
+
+                                <TextView
+                                    android:id="@+id/likesText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="120dp"
+                                    android:text="afs" />
+
+                                <TextView
+                                    android:id="@+id/chaptersText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="afs" />
+                            </TableRow>
+
+                        </TableLayout>
+
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline"

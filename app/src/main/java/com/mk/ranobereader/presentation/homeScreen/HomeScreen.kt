@@ -45,7 +45,6 @@ class HomeScreen : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeScreenBinding.inflate(layoutInflater)
-        Log.d(TAG, "Home Create")
         homeVM = ViewModelProvider(
             this.requireActivity(),
             HomeViewModelFactory(context?.applicationContext as Application)
