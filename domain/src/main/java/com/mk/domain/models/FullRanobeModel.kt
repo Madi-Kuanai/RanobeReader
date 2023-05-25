@@ -1,5 +1,7 @@
 package com.mk.domain.models
 
+import com.mk.domain.Const.TAG
+
 class FullRanobeModel(
     title: String?,
     imageLink: String?,
@@ -8,12 +10,14 @@ class FullRanobeModel(
     description: String?,
     numberOfChapters: String?,
     rating: List<Any>,
-    ratingOfTranslate: String?,
+    ratingOfTranslate: List<Any>,
     likes: String?,
     stateOfTranslation: String?,
     genres: Map<String, String?>,
     tags: Map<String, String?>,
-    var chapters: Map<String, String>
+    var statusOfTitle: String,
+    var chapters: Map<String, String>,
+    var yearOfAnons: String
 ) : RanobeModel(
     title,
     imageLink,
@@ -28,4 +32,8 @@ class FullRanobeModel(
     genres,
     tags
 ) {
+    override fun toString(): String {
+
+        return "${super.toString()} FullRanobeModel(statusOfTitle='$statusOfTitle', chapters=$chapters, yearOfAnons='$yearOfAnons')"
+    }
 }

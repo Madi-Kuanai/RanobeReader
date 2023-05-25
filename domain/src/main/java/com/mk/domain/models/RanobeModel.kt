@@ -8,7 +8,7 @@ open class RanobeModel(
     linkToRanobe: String?, var author: String?, description: String?,
     var numberOfChapters: String?,
     var rating: List<Any>,
-    var ratingOfTranslate: String?, likes: String?, var stateOfTranslation: String?,
+    var ratingOfTranslate: List<Any>, likes: String?, var stateOfTranslation: String?,
     var genres: Map<String, String?>, var tags: Map<String, String?>
 ) : IRanobe(
     title = title?.split("/")?.toTypedArray()?.get(title.split("/").toTypedArray().size - 1),

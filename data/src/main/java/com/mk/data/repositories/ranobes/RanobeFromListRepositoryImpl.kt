@@ -21,6 +21,7 @@ class RanobeFromListRepositoryImpl : IRanobeFromListRepository {
         // URL of the webpage to parse
         if (method == Const.GET) {
             // Connect to the URL and parse the HTML
+            Log.d(TAG, "URL: $url")
             doc = Jsoup.connect(url).get()
         } else if (method == Const.POST) {
             // Parse the response with Jsoup
@@ -57,9 +58,11 @@ class RanobeFromListRepositoryImpl : IRanobeFromListRepository {
                 "title",
                 "Кол-во глав всего / Кол-во платных глав"
             ).text()
-            val rating = liElement.getElementsByAttributeValue("title", "Рейтинг").text().split(" / ")
+            val rating =
+                liElement.getElementsByAttributeValue("title", "Рейтинг").text().split(" / ")
             val ratingOfTranslate =
                 liElement.getElementsByAttributeValue("title", "Качество перевода").text()
+                    .split(" / ")
             val like: String = liElement.getElementsByAttributeValue("title", "Лайки").text()
             val description = liElement.getElementsByClass("tooltip_templates").first()!!.text()
             val stateOfTranslate = liElement.getElementsByTag("em")[1].text()

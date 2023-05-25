@@ -3,7 +3,6 @@ package com.mk.data.repositories.ranobes
 import android.util.Log
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.FullRanobeModel
-import com.mk.domain.models.RanobeModel
 import com.mk.domain.useCase.IReturnRanobeRepository
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -27,7 +26,8 @@ class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
                 listOf("", "")
             }
 
-            val ratingOfTranslateElement = doc.select(".span5").select(".rating-block").getOrNull(1)?.text()
+            val ratingOfTranslateElement =
+                doc.select(".span5").select(".rating-block").getOrNull(1)?.text()
             val ratingOfTranslate = ratingOfTranslateElement ?: ""
 
             val authorElement = doc.select(".span5").select("p")
@@ -51,11 +51,11 @@ class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
             val descriptionElement = doc.selectFirst("div[style=margin: 20px 0 0 0]")
             val description = descriptionElement?.text() ?: ""
 
-            val stateOfTranslationElement = doc.select("div.tools")[1].select("dl.info").first()?.select("dd")?.first()
-            val stateOfTranslation = stateOfTranslationElement?.text().toString()
+            val stateOfTranslationElement =
+                doc.select("div.tools")[1].select("dl.info").first()?.select("dd")?.first()
+            val stateOfTranslation = stateOfTranslationElement?.text() ?: "Неизвестно"
 
-            val numberOfChaptersElement = doc.select(".span4.sr")
-                .select("dl").select("dt")
+            val numberOfChaptersElement = doc.select(".span4.sr").select("dl").select("dt")
                 .find { element -> element.text().contains("Размер перевода:") }
             val numberOfChapters = numberOfChaptersElement?.let {
                 val index = doc.select(".span4.sr").select("dl").select("dt").indexOf(it)
@@ -79,7 +79,12 @@ class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
                 val href = elem.select(".t").first()?.select("a")?.attr("href").toString()
                 chapters[name] = href
             }
-
+            val statusOfTitleElement = doc.select(".span5").select("p")
+                .firstOrNull { element -> element.text().toString().contains("Выпуск:") }
+            val statusOfTitle = statusOfTitleElement?.select("em")?.text() ?: "Неизвестно"
+            val yearOfAnonsElement = doc.select(".span5").select("p")
+                .firstOrNull { element -> element.text().toString().contains("Год выпуска:") }
+            val yearOfAnons = yearOfAnonsElement?.select("em")?.text() ?: "Неизвестно"
 
             return FullRanobeModel(
                 fullName,
@@ -89,12 +94,15 @@ class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
                 description,
                 numberOfChapters,
                 rating,
-                ratingOfTranslate,
+                ratingOfTranslate.split(" / "),
                 likes,
                 stateOfTranslation,
                 genres,
                 tags,
-                hashMapOf()
+                statusOfTitle,
+                chapters,
+                yearOfAnons
+
             )
 
         } catch (e: Exception) {
@@ -104,8 +112,7 @@ class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
 
     }
 
-}
-/*
+}/*
              -title: String,
              -imageLink: String,
              -linkToRanobe: String,

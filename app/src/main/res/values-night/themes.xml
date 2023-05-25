@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.RanobeReader" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimary">#1C1C1E</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
@@ -17,8 +17,9 @@
         <item name="appbarColor">#1C1B20</item>
         <item name="android:textColor">@color/white</item>
         <item name="cardViewColor">?colorPrimary</item>
-        <item name="textColor">@color/white</item>
+        <item name="textColor">#EEE</item>
     </style>
+
     <style name="TextAppearance.MyApp.Title.Collapsed" parent="android:TextAppearance">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
@@ -27,5 +28,10 @@
     <style name="TextAppearance.MyApp.Title.Expanded" parent="android:TextAppearance">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
+    </style>
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#666</item>
     </style>
 </resources>
