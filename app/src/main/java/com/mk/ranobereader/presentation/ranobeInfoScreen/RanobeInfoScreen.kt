@@ -1,6 +1,7 @@
 package com.mk.ranobereader.presentation.ranobeInfoScreen
 
 
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -8,15 +9,13 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.View.GONE
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.view.View.VISIBLE
+import android.view.animation.TranslateAnimation
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.graphics.drawable.toIcon
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,17 +43,16 @@ class RanobeInfoScreen() : AppCompatActivity() {
     private lateinit var ranobeVM: RanobeInfoViewModel
     private lateinit var genresAdapter: GenresAdapter
     private lateinit var tagsAdapter: GenresAdapter
+    private var isExpand: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRanobeInfoScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.mainLayout.visibility = GONE
         ranobeModel = intent.getSerializableExtra(Const.RANOBE_MODEL) as IRanobe
-        ranobeVM =
-            ViewModelProvider(
-                this,
-                RanobeInfoViewModelFactory()
-            )[RanobeInfoViewModel::class.java]
+        ranobeVM = ViewModelProvider(
+            this, RanobeInfoViewModelFactory()
+        )[RanobeInfoViewModel::class.java]
         ranobeVM.setUrl(ranobeModel.linkToRanobe)
         genresAdapter = GenresAdapter()
         tagsAdapter = GenresAdapter()
@@ -73,31 +71,35 @@ class RanobeInfoScreen() : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setFullData(nRanobeMode: FullRanobeModel) {
         val url = URL(nRanobeMode.imageLink)
         val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
 
-        Glide.with(binding.root)
-            .load(image)
-            .apply(RequestOptions().override(700, 600))
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-            .transform(RoundedCorners(20))
-            .placeholder(R.drawable.black_image)
-            .into(binding.coverImage)
+        Glide.with(binding.root).load(image).apply(RequestOptions().override(700, 600))
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).transform(RoundedCorners(20))
+            .placeholder(R.drawable.black_image).into(binding.coverImage)
         Palette.from(image).generate {
 
             val dominantColor: Int = it?.getDominantColor(0) ?: 1
+            val contrastColor = getContrastColor(dominantColor)
             binding.imageBack.setBackgroundColor(dominantColor)
             binding.imageBack.background.alpha = 210
             binding.mainLayout.setBackgroundColor(dominantColor)
             val drawable = binding.infoLayout.background as GradientDrawable
             drawable.setColor(darkenColor(dominantColor))// Replace with your desired color
             binding.infoLayout.background = drawable
+            binding.textView2.setTextColor(contrastColor)
+            binding.textView3.setTextColor(contrastColor)
+            binding.textView4.setTextColor(contrastColor)
+            binding.rating.setTextColor(contrastColor)
+            binding.ratingOfTranslate.setTextColor(contrastColor)
+            binding.likes.setTextColor(contrastColor)
         }
 
         val drawable: Drawable = BitmapDrawable(resources, image)
         binding.a.background = drawable
-
+        binding.expandedInfo.visibility = GONE
         binding.description.text = nRanobeMode.description
         if (nRanobeMode.author.isNullOrEmpty()) {
             binding.author.visibility = GONE
@@ -118,10 +120,7 @@ class RanobeInfoScreen() : AppCompatActivity() {
             genresAdapter.addGenres(nRanobeMode.genres)
             genresRecView.addItemDecoration(
                 MarginItemDecoration(
-                    top = 2,
-                    left = 10,
-                    right = 5,
-                    bottom = 5
+                    top = 2, left = 10, right = 5, bottom = 5
                 )
             )
             genresRecView.layoutManager =
@@ -131,15 +130,51 @@ class RanobeInfoScreen() : AppCompatActivity() {
             tagsAdapter.addGenres(nRanobeMode.tags)
             tags.addItemDecoration(
                 MarginItemDecoration(
-                    top = 2,
-                    left = 10,
-                    right = 5,
-                    bottom = 5
+                    top = 2, left = 10, right = 5, bottom = 5
                 )
             )
             tags.layoutManager =
                 LinearLayoutManager(this@RanobeInfoScreen, LinearLayoutManager.HORIZONTAL, false)
-            tags.adapter = tagsAdapter
+            tags.adapter = genresAdapter
+        }
+        val initialHeight = binding.expandedInfo.height
+
+        binding.expandBtn.setOnClickListener {
+            if (isExpand) {
+                // Collapse the container
+                binding.expandIcon.setImageResource(R.mipmap.ic_expand_less)
+                val animate = TranslateAnimation(0f, 0f, 0f, initialHeight.toFloat())
+
+                // Duration of animation
+                animate.duration = 250
+                animate.fillAfter = true
+                binding.expandedInfo.startAnimation(animate)
+                binding.expandedInfo.visibility = GONE
+            } else {
+                // Expand the container
+                binding.expandIcon.setImageResource(R.mipmap.ic_expand_more)
+                binding.expandedInfo.visibility = VISIBLE
+                val animate = TranslateAnimation(0f, 0f, initialHeight.toFloat(), 0f)
+
+                // Duration of animation
+                animate.duration = 500
+                animate.fillAfter = false
+                binding.expandedInfo.startAnimation(animate)
+            }
+            isExpand = !isExpand
+        }
+
+    }
+
+    private fun getContrastColor(color: Int): Int {
+        // Calculate the luminance of the color
+        val luminance = ColorUtils.calculateLuminance(color)
+
+        // Determine the contrast color based on the luminance
+        return if (luminance > 0.5) {
+            Color.BLACK // Black for lighter colors
+        } else {
+            Color.WHITE // White for darker colors
         }
     }
 

@@ -2,10 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <gradient
-                android:endColor="#02E7FC"
-                android:centerColor="#395998"
-                android:startColor="#6D16E6" />
             <corners android:radius="10dp" />
             <padding
                 android:bottom="2dp"
@@ -18,8 +14,11 @@
         </shape>
     </item>
     <item>
-        <shape android:shape="rectangle">
-            <solid android:color="?attr/appbarColor" />
+        <shape
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shape="rectangle">
+            <solid android:color="?attr/genreCard" />
             <corners android:radius="10dp" />
             <size
                 android:width="51dp"

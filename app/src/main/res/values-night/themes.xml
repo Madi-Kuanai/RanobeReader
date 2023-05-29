@@ -15,6 +15,7 @@
         <!-- Customize your theme here. -->
         <item name="iconTint">#5043FA</item>
         <item name="appbarColor">#1C1B20</item>
+        <item name="genreCard">#27292B</item>
         <item name="android:textColor">@color/white</item>
         <item name="cardViewColor">?colorPrimary</item>
         <item name="textColor">#EEE</item>
@@ -29,6 +30,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
     </style>
+
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>

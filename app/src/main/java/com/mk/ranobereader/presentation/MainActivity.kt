@@ -1,10 +1,13 @@
 package com.mk.ranobereader.presentation
 
 
+import NetworkChangeReceiver
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.CompoundButton
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -13,16 +16,18 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationBarView
 import com.mk.data.themeSharedPref.PreferenceService
 import com.mk.domain.Const
+import com.mk.domain.Const.TAG
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.ActivityMainBinding
 import com.mk.ranobereader.presentation.downloadScreen.DownloadScreen
+import com.mk.ranobereader.presentation.errorScreen.ErrorScreen
 import com.mk.ranobereader.presentation.exploreScreen.ExploreScreen
 import com.mk.ranobereader.presentation.favouritesScreen.FavouritesScreen
 import com.mk.ranobereader.presentation.homeScreen.HomeScreen
 import com.mk.ranobereader.presentation.settingScreen.SettingScreen
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateListener {
     var binding: ActivityMainBinding? = null
     var pref: PreferenceService? = null
     var homeScreen = HomeScreen()
@@ -31,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     var downloadScreen = DownloadScreen()
     var settingScreen = SettingScreen()
     lateinit var lastFrame: Fragment
+    private lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,15 +44,42 @@ class MainActivity : AppCompatActivity() {
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        networkChangeReceiver = NetworkChangeReceiver(this)
 
         if (networkInfo != null && networkInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+            Log.d(TAG, "onCreate: InternetActivated")
             binding = ActivityMainBinding.inflate(layoutInflater)
             setContentView(binding!!.root)
             init()
+            setThemeSettings()
+            setNavigationSettings()
         } else {
-            setContentView(R.layout.internet_error)
+            onInternetLoss()
         }
 
+    }
+
+    private fun onInternetLoss() {
+        Log.d(TAG, "onCreate: Connection error")
+        setLayoutToFrame(ErrorScreen())
+    }
+
+    private fun onInternetActivated() {
+        setNavigationSettings()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(
+            networkChangeReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(networkChangeReceiver)
     }
 
     private fun init() {
@@ -55,8 +88,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        setThemeSettings()
-        setNavigationSettings()
     }
 
     private fun setNavigationSettings() {
@@ -67,18 +98,22 @@ class MainActivity : AppCompatActivity() {
                     setLayoutToFrame(homeScreen)
                     return@OnItemSelectedListener true
                 }
+
                 R.id.explore -> {
                     setLayoutToFrame(exploreScreen)
                     return@OnItemSelectedListener true
                 }
+
                 R.id.favourites -> {
                     setLayoutToFrame(favouritesScreen)
                     return@OnItemSelectedListener true
                 }
+
                 R.id.downloaded -> {
                     setLayoutToFrame(downloadScreen)
                     return@OnItemSelectedListener true
                 }
+
                 R.id.settings -> {
                     setLayoutToFrame(settingScreen)
                     return@OnItemSelectedListener true
@@ -108,6 +143,16 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 pref!!.setLightTheme()
             }
+        }
+    }
+
+    override fun onNetworkStateChanged(isConnected: Boolean) {
+        if (!isConnected) {
+            Log.d(TAG, "Internet losing")
+            onInternetLoss()
+        } else {
+            onInternetActivated()
+            Log.d(TAG, "Internet connected")
         }
     }
 }

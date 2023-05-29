@@ -25,9 +25,7 @@ class RanobeInfoViewModel() : ViewModel() {
         try {
             val getRanobe = LoadRanobePageUseCase(ReturnRanobeRepositoryImpl())
             val resultRanobe: FullRanobeModel = getRanobe.execute(url)
-            Log.d(TAG, resultRanobe.toString())
             _ranobe.postValue(resultRanobe)
-
         } catch (e: Exception) {
             Log.d(TAG, e.message.toString())
         }

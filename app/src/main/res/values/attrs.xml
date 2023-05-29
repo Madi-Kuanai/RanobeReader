@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="appbarColor" format="color"/>
-    <attr name="cardViewColor" format="color"/>
-    <attr name="textColor" format="color"/>
+    <attr name="appbarColor" format="color" />
+    <attr name="cardViewColor" format="color" />
+    <attr name="textColor" format="color" />
+    <attr name="genreCard" format="color" />
 </resources>
