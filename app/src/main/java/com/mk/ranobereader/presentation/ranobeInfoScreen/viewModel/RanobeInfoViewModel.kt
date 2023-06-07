@@ -1,23 +1,40 @@
 package com.mk.ranobereader.presentation.ranobeInfoScreen.viewModel
 
+import android.app.Application
+import android.content.Context.MODE_PRIVATE
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.mk.data.repositories.SharedPref.ViewedRanobePreferenceService
 import com.mk.data.repositories.ranobes.ReturnRanobeRepositoryImpl
+import com.mk.domain.Const
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.FullRanobeModel
-import com.mk.domain.models.RanobeModel
+import com.mk.domain.models.IRanobe
+import com.mk.domain.models.PreviouslyReadRanobeModel
 import com.mk.domain.useCase.LoadRanobePageUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RanobeInfoViewModel() : ViewModel() {
+class RanobeInfoViewModel(private val application: Application) : AndroidViewModel(application) {
     private var _ranobe = MutableLiveData<FullRanobeModel>()
     var ranobe = _ranobe
     private lateinit var url: String
+    private var sharedPref: ViewedRanobePreferenceService = ViewedRanobePreferenceService(
+        application.getSharedPreferences(
+            Const.VIEWED_SHARED_KEY,
+            MODE_PRIVATE
+        )
+    )
 
-    init {
+    fun getData(url: String) {
+        if (url.contains("https://tl.rulate.ruhttps://tl.rulate.ru")) {
+            this.url = url.replace("https://tl.rulate.ruhttps://tl.rulate.ru", "")
+        } else {
+            this.url = url
+        }
+        Log.d(TAG, url)
         CoroutineScope(Dispatchers.IO).launch { loadData() }
     }
 
@@ -25,13 +42,19 @@ class RanobeInfoViewModel() : ViewModel() {
         try {
             val getRanobe = LoadRanobePageUseCase(ReturnRanobeRepositoryImpl())
             val resultRanobe: FullRanobeModel = getRanobe.execute(url)
+            Log.d(TAG, "loadData: $resultRanobe")
             _ranobe.postValue(resultRanobe)
         } catch (e: Exception) {
             Log.d(TAG, e.message.toString())
         }
     }
 
-    fun setUrl(url: String) {
-        this.url = url
+
+    fun setViewedRanobe(nRanobeModel: PreviouslyReadRanobeModel) {
+        sharedPref.setViewedRanobe(nRanobeModel)
+    }
+
+    fun isViewedRanobe(nRanobeModel: IRanobe): Boolean {
+        return sharedPref.isViewedRanobe(nRanobeModel)
     }
 }

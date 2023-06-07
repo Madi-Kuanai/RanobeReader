@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationBarView
-import com.mk.data.themeSharedPref.PreferenceService
+import com.mk.data.repositories.SharedPref.ThemePreferenceService
 import com.mk.domain.Const
 import com.mk.domain.Const.TAG
 import com.mk.ranobereader.R
@@ -29,7 +29,7 @@ import com.mk.ranobereader.presentation.settingScreen.SettingScreen
 
 class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateListener {
     var binding: ActivityMainBinding? = null
-    var pref: PreferenceService? = null
+    var pref: ThemePreferenceService? = null
     var homeScreen = HomeScreen()
     var favouritesScreen = FavouritesScreen()
     var exploreScreen = ExploreScreen()
@@ -37,16 +37,26 @@ class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateList
     var settingScreen = SettingScreen()
     lateinit var lastFrame: Fragment
     private lateinit var networkChangeReceiver: NetworkChangeReceiver
+    public var isConnected: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Thread.setDefaultUncaughtExceptionHandler { _, paramThrowable ->
+            paramThrowable.localizedMessage?.let {
+                Log.d(
+                    TAG,
+                    "Error: " + Thread.currentThread().stackTrace[2] + "/n" + it
+                )
+            }
+        }
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         networkChangeReceiver = NetworkChangeReceiver(this)
 
         if (networkInfo != null && networkInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+            isConnected = true
             Log.d(TAG, "onCreate: InternetActivated")
             binding = ActivityMainBinding.inflate(layoutInflater)
             setContentView(binding!!.root)
@@ -54,17 +64,25 @@ class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateList
             setThemeSettings()
             setNavigationSettings()
         } else {
+            binding = ActivityMainBinding.inflate(layoutInflater)
+            setContentView(binding!!.root)
+            init()
+            setThemeSettings()
+            setNavigationSettings()
+            isConnected = false
             onInternetLoss()
         }
 
     }
 
     private fun onInternetLoss() {
+        isConnected = false
         Log.d(TAG, "onCreate: Connection error")
         setLayoutToFrame(ErrorScreen())
     }
 
     private fun onInternetActivated() {
+        isConnected = true
         setNavigationSettings()
     }
 
@@ -83,7 +101,7 @@ class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateList
     }
 
     private fun init() {
-        pref = PreferenceService(getSharedPreferences(Const.sharedTheme, MODE_PRIVATE))
+        pref = ThemePreferenceService(getSharedPreferences(Const.SHARED_THEME, MODE_PRIVATE))
     }
 
     override fun onStart() {
@@ -91,8 +109,13 @@ class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateList
     }
 
     private fun setNavigationSettings() {
-        supportFragmentManager.beginTransaction().replace(R.id.frameLayout, homeScreen).commit()
-        binding!!.bottomNavigationView.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item ->
+        if (!isConnected) {
+            setLayoutToFrame(ErrorScreen())
+
+        } else {
+            supportFragmentManager.beginTransaction().replace(R.id.frameLayout, homeScreen).commit()
+        }
+        binding?.bottomNavigationView?.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
                     setLayoutToFrame(homeScreen)

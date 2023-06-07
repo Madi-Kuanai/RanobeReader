@@ -58,4 +58,12 @@ class PopularsCardAdapter : RecyclerView.Adapter<PopularsCardAdapter.PopularsCar
         listOfPopularRanobe.add(ranobeModel)
         notifyDataSetChanged()
     }
+
+    fun clearCards() {
+        // Clear the existing card list
+        // For example, if you have a list named "cards", you can do:
+        listOfPopularRanobe.clear()
+        notifyDataSetChanged()
+    }
+
 }

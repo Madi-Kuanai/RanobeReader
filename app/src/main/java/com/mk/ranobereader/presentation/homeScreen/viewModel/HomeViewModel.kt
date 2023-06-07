@@ -10,10 +10,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.mk.data.repositories.SharedPref.ViewedRanobePreferenceService
 import com.mk.data.repositories.ranobes.RanobeFromListRepositoryImpl
 import com.mk.data.repositories.ranobes.UpdateRanobeRepositoryImp
 import com.mk.domain.Const
 import com.mk.domain.Const.TAG
+import com.mk.domain.models.PreviouslyReadRanobeModel
 import com.mk.domain.models.RanobeModel
 import com.mk.domain.models.UpdatedRanobeModel
 import com.mk.domain.useCase.LoadMostPopularsUseCase
@@ -26,19 +28,28 @@ import org.json.JSONException
 import java.util.concurrent.ExecutionException
 
 class HomeViewModel(private val application: Application) : AndroidViewModel(application) {
-    private val _mvWithDescriptionCard = MutableLiveData<ArrayList<RanobeModel>?>()
+    private val _mvWithDescriptionRanobeModel = MutableLiveData<ArrayList<RanobeModel>?>()
     private val _mvMostViewedLayoutPosition = MutableLiveData<Float>()
-    private val _mvPopulars = MutableLiveData<ArrayList<RanobeModel>?>()
-    private val _mvUpdates = MutableLiveData<ArrayList<UpdatedRanobeModel>>()
+    private val _mvPopularsRanobe = MutableLiveData<ArrayList<RanobeModel>?>()
+    private val _mvUpdatesRanobe = MutableLiveData<ArrayList<UpdatedRanobeModel>>()
     private val _mvUpdatesPosition = MutableLiveData<Float>()
     private val _mvPopularsPosition = MutableLiveData<Float>()
+    private val _viewedRanobe = MutableLiveData<ArrayList<PreviouslyReadRanobeModel>>()
 
-    val mvWithDescription: MutableLiveData<ArrayList<RanobeModel>?> = _mvWithDescriptionCard
+    val mvWithDescriptionRanobeModel: MutableLiveData<ArrayList<RanobeModel>?> =
+        _mvWithDescriptionRanobeModel
     val mvMostViewedLayoutPosition = _mvMostViewedLayoutPosition
-    val mvPopulars: MutableLiveData<ArrayList<RanobeModel>?> = _mvPopulars
-    val mvUpdates = _mvUpdates
+    val mvPopularsRanobeModel: MutableLiveData<ArrayList<RanobeModel>?> = _mvPopularsRanobe
+    val mvUpdatesRanobeModel = _mvUpdatesRanobe
     val mvUpdatesPosition = _mvUpdatesPosition
     val mvPopularsPosition = _mvPopularsPosition
+    val viewedRanobe = _viewedRanobe
+    private var sharedPref: ViewedRanobePreferenceService = ViewedRanobePreferenceService(
+        application.getSharedPreferences(
+            Const.VIEWED_SHARED_KEY,
+            Context.MODE_PRIVATE
+        )
+    )
 
     init {
         Log.d(Const.TAG, "ViewModel Create")
@@ -64,9 +75,13 @@ class HomeViewModel(private val application: Application) : AndroidViewModel(app
             val resultMostPopular: List<RanobeModel> = getMostPopular.execute(1)
             val resultUpdates: List<UpdatedRanobeModel> = getUpdates.execute(1)
 
-            _mvPopulars.postValue(resultMostPopular as ArrayList<RanobeModel>)
-            _mvWithDescriptionCard.postValue(resultMostViewed as ArrayList<RanobeModel>)
-            _mvUpdates.postValue(resultUpdates as ArrayList<UpdatedRanobeModel>)
+            val viewedRanobe: List<PreviouslyReadRanobeModel>? = getViewedRanobes()
+            if (viewedRanobe != null) {
+                _viewedRanobe.postValue(viewedRanobe as ArrayList<PreviouslyReadRanobeModel>?)
+            }
+            _mvPopularsRanobe.postValue(resultMostPopular as ArrayList<RanobeModel>)
+            _mvWithDescriptionRanobeModel.postValue(resultMostViewed as ArrayList<RanobeModel>)
+            _mvUpdatesRanobe.postValue(resultUpdates as ArrayList<UpdatedRanobeModel>)
         } catch (e: ExecutionException) {
             Log.d(TAG, "loadData: ${e.stackTrace}")
             handleDataLoadingError(e)
@@ -108,13 +123,37 @@ class HomeViewModel(private val application: Application) : AndroidViewModel(app
     }
 
     internal fun refreshData() {
-        _mvPopulars.postValue(null)
-        _mvMostViewedLayoutPosition.postValue(0.0f)
-        _mvPopularsPosition.postValue(0.0f)
-        _mvUpdatesPosition.postValue(0.0f)
-        _mvWithDescriptionCard.postValue(null)
-        viewModelScope.launch(Dispatchers.IO) {
-            loadData()
+        try {
+            _mvPopularsRanobe.postValue(null)
+            _mvMostViewedLayoutPosition.postValue(0.0f)
+            _mvPopularsPosition.postValue(0.0f)
+            _mvUpdatesPosition.postValue(0.0f)
+            _mvWithDescriptionRanobeModel.postValue(null)
+            viewModelScope.launch(Dispatchers.IO) {
+                loadData()
+            }
+        } catch (e: ExecutionException) {
+            Log.d(TAG, "refreshData: ${e.stackTrace}")
+            handleDataLoadingError(e)
+        } catch (e: InterruptedException) {
+
+            Log.d(TAG, "refreshData: ${e.stackTrace}")
+            handleDataLoadingError(e)
+        } catch (e: JSONException) {
+            Log.d(TAG, "refreshData: ${e.stackTrace}")
+            handleDataLoadingError(e)
         }
+    }
+
+//    fun setViewedRanobe(nRanobeModel: PreviouslyReadRanobeModel) {
+//        sharedPref.setViewedRanobe(nRanobeModel)
+//    }
+//
+//    fun isViewed(nRanobeModel: IRanobe): Boolean {
+//        return sharedPref.isViewedRanobe(nRanobeModel)
+//    }
+
+    private fun getViewedRanobes(): List<PreviouslyReadRanobeModel>? {
+        return sharedPref.getViewedRanobe()
     }
 }

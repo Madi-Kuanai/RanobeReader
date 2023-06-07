@@ -13,7 +13,6 @@ class LoadMostViewedUseCase(
         val payload = JSONObject()
         payload.put("period", "new")
         payload.put("adult", 0)
-        print(Const.MOST_VIEWED_URI + Const.NEXT_PAGE_URI + page)
         return IRanobeRepository.fetchRanobeList(
             Const.MOST_VIEWED_URI + Const.NEXT_PAGE_URI + page,
             Const.GET,

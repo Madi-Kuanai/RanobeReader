@@ -47,16 +47,18 @@
                 android:ellipsize="end"
                 android:gravity="top|left"
                 android:maxLines="2"
-                android:paddingBottom="10dp"
+                android:paddingBottom="20dp"
                 android:text="fff"
+                android:textSize="16sp"
                 app:autoSizeMaxTextSize="20sp"
-                app:autoSizeMinTextSize="16sp"
-                app:autoSizeStepGranularity="2sp"
+                app:autoSizeMinTextSize="14sp"
+                app:autoSizeStepGranularity="1sp"
                 app:autoSizeTextType="uniform"
-
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.1" />
 
             <TextView
                 android:id="@+id/titleOfLastUpdate"
@@ -71,7 +73,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title"
-                app:layout_constraintVertical_bias="0.3" />
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/dateOfAdded"
@@ -86,7 +88,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/titleOfLastUpdate"
 
-                app:layout_constraintVertical_bias="0.8" />
+                app:layout_constraintVertical_bias="0.85" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline6"

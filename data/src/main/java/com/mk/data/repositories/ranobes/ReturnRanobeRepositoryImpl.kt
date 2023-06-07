@@ -6,12 +6,11 @@ import com.mk.domain.models.FullRanobeModel
 import com.mk.domain.useCase.IReturnRanobeRepository
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import kotlin.math.log
 
 class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
     override suspend fun fetchRanobe(url: String): FullRanobeModel {
         try {
-
+            Log.d(TAG, "URL: $url")
             val doc = Jsoup.connect(url).get().body()
             val fullNameElement = doc.selectFirst(".span8")?.selectFirst("h1")
             val fullName = fullNameElement?.text().toString()

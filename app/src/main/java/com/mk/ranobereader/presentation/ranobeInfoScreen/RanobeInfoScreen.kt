@@ -2,6 +2,7 @@ package com.mk.ranobereader.presentation.ranobeInfoScreen
 
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -23,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.mk.data.repositories.SharedPref.ViewedRanobePreferenceService
 import com.mk.domain.Const
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.FullRanobeModel
@@ -33,6 +35,7 @@ import com.mk.ranobereader.presentation.homeScreen.GenresAdapter
 import com.mk.ranobereader.presentation.homeScreen.MarginItemDecoration
 import com.mk.ranobereader.presentation.ranobeInfoScreen.viewModel.RanobeInfoViewModel
 import com.mk.ranobereader.presentation.ranobeInfoScreen.viewModel.RanobeInfoViewModelFactory
+import com.mk.ranobereader.presentation.readingScreen.ReadingScreen
 import java.net.URL
 
 
@@ -44,26 +47,39 @@ class RanobeInfoScreen() : AppCompatActivity() {
     private lateinit var genresAdapter: GenresAdapter
     private lateinit var tagsAdapter: GenresAdapter
     private var isExpand: Boolean = false
+    private lateinit var fullRanobeModel: FullRanobeModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRanobeInfoScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.mainLayout.visibility = GONE
         ranobeModel = intent.getSerializableExtra(Const.RANOBE_MODEL) as IRanobe
+        val shared = ViewedRanobePreferenceService(
+            getSharedPreferences(
+                Const.VIEWED_SHARED_KEY, MODE_PRIVATE
+            )
+        )
         ranobeVM = ViewModelProvider(
-            this, RanobeInfoViewModelFactory()
+            this, RanobeInfoViewModelFactory(
+                this.application
+            )
         )[RanobeInfoViewModel::class.java]
-        ranobeVM.setUrl(ranobeModel.linkToRanobe)
+        ranobeVM.getData(ranobeModel.linkToRanobe)
         genresAdapter = GenresAdapter()
         tagsAdapter = GenresAdapter()
         setObserves()
-
+        binding.readButton.setOnClickListener {
+            val intent = Intent(this, ReadingScreen::class.java)
+            intent.putExtra(Const.EXTRA_TYPE, fullRanobeModel)
+            startActivity(intent)
+        }
     }
 
     private fun setObserves() {
         try {
             ranobeVM.ranobe.observe(this) { ranobe ->
                 binding.mainLayout.visibility = View.VISIBLE
+                fullRanobeModel = ranobe
                 setFullData(ranobe)
             }
         } catch (e: Exception) {
@@ -99,7 +115,6 @@ class RanobeInfoScreen() : AppCompatActivity() {
 
         val drawable: Drawable = BitmapDrawable(resources, image)
         binding.a.background = drawable
-        binding.expandedInfo.visibility = GONE
         binding.description.text = nRanobeMode.description
         if (nRanobeMode.author.isNullOrEmpty()) {
             binding.author.visibility = GONE
@@ -135,7 +150,7 @@ class RanobeInfoScreen() : AppCompatActivity() {
             )
             tags.layoutManager =
                 LinearLayoutManager(this@RanobeInfoScreen, LinearLayoutManager.HORIZONTAL, false)
-            tags.adapter = genresAdapter
+            tags.adapter = tagsAdapter
         }
         val initialHeight = binding.expandedInfo.height
 
@@ -162,6 +177,10 @@ class RanobeInfoScreen() : AppCompatActivity() {
                 binding.expandedInfo.startAnimation(animate)
             }
             isExpand = !isExpand
+        }
+        if (ranobeVM.isViewedRanobe(fullRanobeModel)) {
+            Log.d(TAG, "viewed")
+            binding.continueButton.visibility = VISIBLE
         }
 
     }

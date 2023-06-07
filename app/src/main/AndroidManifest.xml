@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RanobeReader">
         <activity
+            android:name=".presentation.readingScreen.ReadingScreen"
+            android:exported="false" />
+        <activity
             android:name=".presentation.ranobeInfoScreen.RanobeInfoScreen"
             android:exported="false" />
         <activity
