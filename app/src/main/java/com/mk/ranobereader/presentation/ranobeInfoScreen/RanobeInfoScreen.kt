@@ -6,11 +6,12 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.animation.TranslateAnimation
@@ -24,15 +25,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.mk.data.repositories.SharedPref.ViewedRanobePreferenceService
 import com.mk.domain.Const
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.FullRanobeModel
 import com.mk.domain.models.IRanobe
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.ActivityRanobeInfoScreenBinding
-import com.mk.ranobereader.presentation.homeScreen.GenresAdapter
-import com.mk.ranobereader.presentation.homeScreen.MarginItemDecoration
+import com.mk.ranobereader.presentation.adapters.GenresAdapter
+import com.mk.ranobereader.presentation.adapters.MarginItemDecoration
 import com.mk.ranobereader.presentation.ranobeInfoScreen.viewModel.RanobeInfoViewModel
 import com.mk.ranobereader.presentation.ranobeInfoScreen.viewModel.RanobeInfoViewModelFactory
 import com.mk.ranobereader.presentation.readingScreen.ReadingScreen
@@ -46,7 +46,7 @@ class RanobeInfoScreen() : AppCompatActivity() {
     private lateinit var ranobeVM: RanobeInfoViewModel
     private lateinit var genresAdapter: GenresAdapter
     private lateinit var tagsAdapter: GenresAdapter
-    private var isExpand: Boolean = false
+    private var isExpand: Boolean = true
     private lateinit var fullRanobeModel: FullRanobeModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,11 +54,6 @@ class RanobeInfoScreen() : AppCompatActivity() {
         setContentView(binding.root)
         binding.mainLayout.visibility = GONE
         ranobeModel = intent.getSerializableExtra(Const.RANOBE_MODEL) as IRanobe
-        val shared = ViewedRanobePreferenceService(
-            getSharedPreferences(
-                Const.VIEWED_SHARED_KEY, MODE_PRIVATE
-            )
-        )
         ranobeVM = ViewModelProvider(
             this, RanobeInfoViewModelFactory(
                 this.application
@@ -68,8 +63,29 @@ class RanobeInfoScreen() : AppCompatActivity() {
         genresAdapter = GenresAdapter()
         tagsAdapter = GenresAdapter()
         setObserves()
+        setBottomButtons()
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            setDisplayShowTitleEnabled(false)
+            setDisplayUseLogoEnabled(false)
+            setDisplayShowCustomEnabled(false)
+            setBackgroundDrawable(ColorDrawable(0x00000000))
+            customView = null
+        }
+    }
+
+    private fun setBottomButtons() {
         binding.readButton.setOnClickListener {
             val intent = Intent(this, ReadingScreen::class.java)
+            intent.putExtra(Const.IS_NEW_RANOBE, true)
+            intent.putExtra(Const.EXTRA_TYPE, fullRanobeModel)
+            startActivity(intent)
+        }
+        binding.continueButton.setOnClickListener {
+            val intent = Intent(this, ReadingScreen::class.java)
+            intent.putExtra(Const.IS_NEW_RANOBE, false)
             intent.putExtra(Const.EXTRA_TYPE, fullRanobeModel)
             startActivity(intent)
         }
@@ -78,7 +94,7 @@ class RanobeInfoScreen() : AppCompatActivity() {
     private fun setObserves() {
         try {
             ranobeVM.ranobe.observe(this) { ranobe ->
-                binding.mainLayout.visibility = View.VISIBLE
+                binding.mainLayout.visibility = VISIBLE
                 fullRanobeModel = ranobe
                 setFullData(ranobe)
             }
@@ -89,12 +105,16 @@ class RanobeInfoScreen() : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setFullData(nRanobeMode: FullRanobeModel) {
+        Log.d(TAG, "setFullData: ${nRanobeMode.imageLink}")
         val url = URL(nRanobeMode.imageLink)
         val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
 
         Glide.with(binding.root).load(image).apply(RequestOptions().override(700, 600))
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).transform(RoundedCorners(20))
+            .diskCacheStrategy(DiskCacheStrategy.ALL).transform(RoundedCorners(20))
             .placeholder(R.drawable.black_image).into(binding.coverImage)
+        val drawable: Drawable = BitmapDrawable(resources, image)
+        binding.a.background = drawable
+
         Palette.from(image).generate {
 
             val dominantColor: Int = it?.getDominantColor(0) ?: 1
@@ -111,10 +131,12 @@ class RanobeInfoScreen() : AppCompatActivity() {
             binding.rating.setTextColor(contrastColor)
             binding.ratingOfTranslate.setTextColor(contrastColor)
             binding.likes.setTextColor(contrastColor)
+//            supportActionBar?.apply {
+//                setHomeAsUpIndicator(ColorDrawable(dominantColor))
+//            }
         }
 
-        val drawable: Drawable = BitmapDrawable(resources, image)
-        binding.a.background = drawable
+
         binding.description.text = nRanobeMode.description
         if (nRanobeMode.author.isNullOrEmpty()) {
             binding.author.visibility = GONE
@@ -135,7 +157,7 @@ class RanobeInfoScreen() : AppCompatActivity() {
             genresAdapter.addGenres(nRanobeMode.genres)
             genresRecView.addItemDecoration(
                 MarginItemDecoration(
-                    top = 2, left = 10, right = 5, bottom = 5
+                    top = 2, bottom = 5, left = 10
                 )
             )
             genresRecView.layoutManager =
@@ -145,7 +167,7 @@ class RanobeInfoScreen() : AppCompatActivity() {
             tagsAdapter.addGenres(nRanobeMode.tags)
             tags.addItemDecoration(
                 MarginItemDecoration(
-                    top = 2, left = 10, right = 5, bottom = 5
+                    top = 2, bottom = 5, left = 10
                 )
             )
             tags.layoutManager =
@@ -179,21 +201,46 @@ class RanobeInfoScreen() : AppCompatActivity() {
             isExpand = !isExpand
         }
         if (ranobeVM.isViewedRanobe(fullRanobeModel)) {
-            Log.d(TAG, "viewed")
             binding.continueButton.visibility = VISIBLE
+        } else {
+            binding.continueButton.visibility = GONE
         }
+
+//        binding.coverImage.setOnClickListener {
+//            try {
+//                val intent = Intent(this, FullScreenImageActivity::class.java)
+//                val bitmap = Bitmap.createBitmap(
+//                    drawable.intrinsicWidth,
+//                    drawable.intrinsicHeight,
+//                    Bitmap.Config.ARGB_8888
+//                )
+//                val canvas = Canvas(bitmap)
+//                drawable.setBounds(0, 0, canvas.width, canvas.height)
+//                drawable.draw(canvas)
+//                intent.putExtra(Const.IMAGE_RES, bitmap)
+//                startActivity(intent)
+//            } catch (e: Exception) {
+//                Log.d(TAG, "setFullData: $e")
+//            }
+//        }
+
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1 && resultCode == RESULT_OK) ranobeModel =
+            intent.getSerializableExtra(Const.RANOBE_MODEL) as IRanobe
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+
     private fun getContrastColor(color: Int): Int {
-        // Calculate the luminance of the color
         val luminance = ColorUtils.calculateLuminance(color)
 
-        // Determine the contrast color based on the luminance
         return if (luminance > 0.5) {
-            Color.BLACK // Black for lighter colors
+            Color.BLACK
         } else {
-            Color.WHITE // White for darker colors
+            Color.WHITE
         }
     }
 
@@ -203,5 +250,14 @@ class RanobeInfoScreen() : AppCompatActivity() {
             Color.colorToHSV(color, this)
             this[2] *= 0.8f
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

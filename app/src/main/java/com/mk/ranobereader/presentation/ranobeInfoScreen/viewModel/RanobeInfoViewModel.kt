@@ -12,7 +12,7 @@ import com.mk.domain.Const.TAG
 import com.mk.domain.models.FullRanobeModel
 import com.mk.domain.models.IRanobe
 import com.mk.domain.models.PreviouslyReadRanobeModel
-import com.mk.domain.useCase.LoadRanobePageUseCase
+import com.mk.domain.useCase.LoadRanobeInfoPageUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +27,7 @@ class RanobeInfoViewModel(private val application: Application) : AndroidViewMod
             MODE_PRIVATE
         )
     )
+    var initRanobeModel = MutableLiveData<IRanobe>()
 
     fun getData(url: String) {
         if (url.contains("https://tl.rulate.ruhttps://tl.rulate.ru")) {
@@ -40,9 +41,8 @@ class RanobeInfoViewModel(private val application: Application) : AndroidViewMod
 
     private suspend fun loadData() {
         try {
-            val getRanobe = LoadRanobePageUseCase(ReturnRanobeRepositoryImpl())
+            val getRanobe = LoadRanobeInfoPageUseCase(ReturnRanobeRepositoryImpl())
             val resultRanobe: FullRanobeModel = getRanobe.execute(url)
-            Log.d(TAG, "loadData: $resultRanobe")
             _ranobe.postValue(resultRanobe)
         } catch (e: Exception) {
             Log.d(TAG, e.message.toString())
@@ -56,5 +56,9 @@ class RanobeInfoViewModel(private val application: Application) : AndroidViewMod
 
     fun isViewedRanobe(nRanobeModel: IRanobe): Boolean {
         return sharedPref.isViewedRanobe(nRanobeModel)
+    }
+
+    fun getViewedRanobe(iRanobe: IRanobe): PreviouslyReadRanobeModel? {
+        return sharedPref.getViewedRanobe(iRanobe)
     }
 }

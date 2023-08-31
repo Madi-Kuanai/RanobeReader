@@ -1,6 +1,7 @@
 package com.mk.data.repositories.ranobes
 
 import android.util.Log
+import com.mk.domain.Const
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.UpdatedRanobeModel
 import com.mk.domain.useCase.IUpdateRanobeRepository
@@ -38,13 +39,12 @@ class UpdateRanobeRepositoryImp : IUpdateRanobeRepository {
                     liElement.select("span").first()?.select("a")?.attr("href").toString()
                 val dateOfUpdate =
                     liElement.select("p")[1].select("span").first()?.text().toString()
-                Log.d(TAG, imageLink.split("-").first())
                 ranobeModel.add(
                     UpdatedRanobeModel(
                         title = title,
                         description = description,
-                        imageLink = imageLink.split("-").first() + ".jpg",
-                        linkToRanobe = linkToRanobe,
+                        imageLink = Const.BASE_URI + imageLink.split("-").first() + ".jpg",
+                        linkToRanobe = Const.BASE_URI + linkToRanobe,
                         titleOfLastUpdate = titleOfLastUpdate,
                         linkToLastUpdate = linkToLastUpdate,
                         dateOfUpdate = dateOfUpdate

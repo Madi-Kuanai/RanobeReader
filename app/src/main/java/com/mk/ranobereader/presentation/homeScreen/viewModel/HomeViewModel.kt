@@ -24,6 +24,7 @@ import com.mk.domain.useCase.LoadUpdatedRanobeUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import org.json.JSONException
 import java.util.concurrent.ExecutionException
 
@@ -52,7 +53,6 @@ class HomeViewModel(private val application: Application) : AndroidViewModel(app
     )
 
     init {
-        Log.d(Const.TAG, "ViewModel Create")
         val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
             handleNetworkError(throwable)
         }
@@ -64,6 +64,10 @@ class HomeViewModel(private val application: Application) : AndroidViewModel(app
 
     private suspend fun loadData() {
         try {
+            val viewedRanobe: List<PreviouslyReadRanobeModel>? = getViewedRanobes()
+            if (viewedRanobe != null) {
+                _viewedRanobe.postValue(viewedRanobe as ArrayList<PreviouslyReadRanobeModel>?)
+            }
             val ranobeFromListRepository = RanobeFromListRepositoryImpl()
             val updateRanobeRepository = UpdateRanobeRepositoryImp()
 
@@ -71,17 +75,15 @@ class HomeViewModel(private val application: Application) : AndroidViewModel(app
             val getMostPopular = LoadMostPopularsUseCase(ranobeFromListRepository)
             val getUpdates = LoadUpdatedRanobeUseCase(updateRanobeRepository)
 
-            val resultMostViewed: List<RanobeModel> = getMostViewed.execute(1)
-            val resultMostPopular: List<RanobeModel> = getMostPopular.execute(1)
             val resultUpdates: List<UpdatedRanobeModel> = getUpdates.execute(1)
-
-            val viewedRanobe: List<PreviouslyReadRanobeModel>? = getViewedRanobes()
-            if (viewedRanobe != null) {
-                _viewedRanobe.postValue(viewedRanobe as ArrayList<PreviouslyReadRanobeModel>?)
-            }
-            _mvPopularsRanobe.postValue(resultMostPopular as ArrayList<RanobeModel>)
-            _mvWithDescriptionRanobeModel.postValue(resultMostViewed as ArrayList<RanobeModel>)
             _mvUpdatesRanobe.postValue(resultUpdates as ArrayList<UpdatedRanobeModel>)
+
+            val resultMostPopular: List<RanobeModel> = getMostPopular.execute(1)
+            _mvPopularsRanobe.postValue(resultMostPopular as ArrayList<RanobeModel>)
+
+            val resultMostViewed: List<RanobeModel> = getMostViewed.execute(1)
+            _mvWithDescriptionRanobeModel.postValue(resultMostViewed as ArrayList<RanobeModel>)
+
         } catch (e: ExecutionException) {
             Log.d(TAG, "loadData: ${e.stackTrace}")
             handleDataLoadingError(e)
@@ -154,6 +156,6 @@ class HomeViewModel(private val application: Application) : AndroidViewModel(app
 //    }
 
     private fun getViewedRanobes(): List<PreviouslyReadRanobeModel>? {
-        return sharedPref.getViewedRanobe()
+        return sharedPref.getViewedRanobesList()
     }
 }

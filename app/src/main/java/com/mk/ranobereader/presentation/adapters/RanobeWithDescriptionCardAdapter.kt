@@ -17,8 +17,6 @@ import com.mk.domain.models.RanobeModel
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.RanobeCardWithDescriptionBinding
 import com.mk.ranobereader.presentation.adapters.RanobeWithDescriptionCardAdapter.RanobeWithDescriptionHolder
-import com.mk.ranobereader.presentation.homeScreen.GenresAdapter
-import com.mk.ranobereader.presentation.homeScreen.MarginItemDecoration
 import com.mk.ranobereader.presentation.ranobeInfoScreen.RanobeInfoScreen
 
 class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescriptionHolder>() {
@@ -56,9 +54,8 @@ class RanobeWithDescriptionCardAdapter() : RecyclerView.Adapter<RanobeWithDescri
             binding.genresRecView.addItemDecoration(
                 MarginItemDecoration(
                     top = 2,
-                    left = 10,
-                    right = 10,
-                    bottom = 5
+                    bottom = 5,
+                    left = 10
                 )
             )
             linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL

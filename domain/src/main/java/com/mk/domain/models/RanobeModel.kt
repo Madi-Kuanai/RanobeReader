@@ -13,8 +13,8 @@ open class RanobeModel(
 ) : IRanobe(
     title = title?.split("/")?.toTypedArray()?.get(title.split("/").toTypedArray().size - 1),
     description,
-    imageLink = "https://tl.rulate.ru$imageLink",
-    linkToRanobe = "https://tl.rulate.ru$linkToRanobe"
+    imageLink = imageLink.toString(),
+    linkToRanobe = "$linkToRanobe"
 ), Serializable {
     var likes: Int = likes?.toInt() ?: 0
     override fun toString(): String {

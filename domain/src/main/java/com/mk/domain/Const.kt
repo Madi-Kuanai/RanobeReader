@@ -18,5 +18,13 @@ object Const {
     const val MAIN_PAGE_LINK = "https://tl.rulate.ru/site/login?page="
     const val RANOBE_MODEL = "ranobeModel"
     const val VIEWED_SHARED_KEY = "VIEWED_SHARED_KEY"
-
+    const val IS_NEW_RANOBE = "IS_NEW_RANOBE"
+    const val PICTURES = "PICTURES"
+    const val TEXT = "TEXT"
+    const val IMG_TAG = "<myImg>"
+    const val IMAGE_RES = "imageResource"
+    const val LAST_OPENED_RANOBE = "LAST_OPENED_RANOBE"
+    const val FONT_SIZE = "FONT_SIZE"
+    const val BRIGHTNESS = "BRIGHTNESS"
+    const val READING_SETTING_KEY = "READING_SETTING_KEY"
 }

@@ -30,12 +30,11 @@ class ViewedRanobeCardAdapter :
         fun bind(ranobeModel: PreviouslyReadRanobeModel) {
             binding.title.text = ranobeModel.title
             Log.d(TAG, "ImageLink: " + ranobeModel.imageLink)
-            Glide.with(binding.root).load(ranobeModel.imageLink)
+            Glide.with(binding.root).load(Const.BASE_URI + ranobeModel.imageLink)
                 .apply(RequestOptions().override(250, 500))
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).transform(RoundedCorners(20))
                 .into(binding.imageCover)
-            Log.d(TAG, "LastChapter: " + ranobeModel.lastChapter)
-            binding.titleOfLastUpdate.text = "Читать с ${ranobeModel.lastChapter}"
+            binding.titleOfLastUpdate.text = "Читать с ${ranobeModel.lastChapterTitle}"
             binding.root.setOnClickListener {
                 val intent = Intent(binding.root.context, RanobeInfoScreen()::class.java)
                 intent.putExtra(Const.RANOBE_MODEL, ranobeModel)

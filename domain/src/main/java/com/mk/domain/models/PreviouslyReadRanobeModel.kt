@@ -18,7 +18,8 @@ class PreviouslyReadRanobeModel(
     statusOfTitle: String,
     chapters: Map<String, String>,
     yearOfAnons: String,
-    var lastChapter: String,
+    var lastChapterTitle: String,
+    var lastChapterLink: String,
     var lastPosition: String
 ) : FullRanobeModel(
     title,
@@ -37,7 +38,12 @@ class PreviouslyReadRanobeModel(
     chapters,
     yearOfAnons
 ), Serializable {
-    constructor(fullRanobeModel: FullRanobeModel, lastChapter: String, lastPosition: String) : this(
+    constructor(
+        fullRanobeModel: FullRanobeModel,
+        lastChapterTitle: String,
+        lastChapterLink: String,
+        lastPosition: String
+    ) : this(
         fullRanobeModel.title,
         fullRanobeModel.imageLink.replaceFirst("https://tl.rulate.ru", ""),
         fullRanobeModel.linkToRanobe,
@@ -52,6 +58,6 @@ class PreviouslyReadRanobeModel(
         fullRanobeModel.tags,
         fullRanobeModel.statusOfTitle,
         fullRanobeModel.chapters,
-        fullRanobeModel.yearOfAnons, lastChapter, lastPosition
+        fullRanobeModel.yearOfAnons, lastChapterTitle, lastChapterLink, lastPosition
     )
 }

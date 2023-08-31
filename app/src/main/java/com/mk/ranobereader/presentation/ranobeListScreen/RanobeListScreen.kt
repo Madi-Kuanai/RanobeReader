@@ -19,7 +19,7 @@ import com.mk.domain.useCase.LoadMostPopularsUseCase
 import com.mk.domain.useCase.LoadMostViewedUseCase
 import com.mk.ranobereader.databinding.ActivityRanobeListScreenBinding
 import com.mk.ranobereader.presentation.adapters.RanobeWithDescriptionCardAdapter
-import com.mk.ranobereader.presentation.homeScreen.MarginItemDecoration
+import com.mk.ranobereader.presentation.adapters.MarginItemDecoration
 
 class RanobeListScreen : AppCompatActivity() {
     lateinit var binding: ActivityRanobeListScreenBinding
@@ -100,7 +100,7 @@ class RanobeListScreen : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun addRanobe(ranobeModel: RanobeModel) {
         descriptionCardAdapter.addRanobe(ranobeModel)
-        binding.listRanobeRec.addItemDecoration(MarginItemDecoration(top = 2, left = 3, right = 3, bottom = 5))
+        binding.listRanobeRec.addItemDecoration(MarginItemDecoration(top = 2, bottom = 5, left = 3))
         descriptionCardAdapter.notifyDataSetChanged()
     }
 

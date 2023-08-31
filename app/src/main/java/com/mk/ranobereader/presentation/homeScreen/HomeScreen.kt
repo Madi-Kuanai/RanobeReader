@@ -31,6 +31,8 @@ import com.mk.domain.Const.TAG
 import com.mk.domain.models.RanobeModel
 import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.FragmentHomeScreenBinding
+import com.mk.ranobereader.presentation.adapters.GenresAdapter
+import com.mk.ranobereader.presentation.adapters.MarginItemDecoration
 import com.mk.ranobereader.presentation.adapters.PopularsCardAdapter
 import com.mk.ranobereader.presentation.adapters.UpdateCardAdapter
 import com.mk.ranobereader.presentation.adapters.ViewedRanobeCardAdapter
@@ -147,6 +149,8 @@ class HomeScreen : Fragment(), NetworkChangeReceiver.NetworkStateListener {
         binding.updatesRecView.adapter = updatesCardAdapter
         val linearViewed = LinearLayoutManager(context)
         linearViewed.orientation = LinearLayoutManager.HORIZONTAL
+        linearViewed.reverseLayout = true
+        linearViewed.stackFromEnd = true
         binding.viewedRecView.layoutManager = linearViewed
         binding.viewedRecView.adapter = viewedRanobeCardAdapter
     }
@@ -214,7 +218,7 @@ class HomeScreen : Fragment(), NetworkChangeReceiver.NetworkStateListener {
             .placeholder(R.drawable.black_image)
             .into((view.findViewById<View>(R.id.imageCover) as ImageView))
         val recView = view.findViewById<RecyclerView>(R.id.genresRecView)
-        recView.addItemDecoration(MarginItemDecoration(top = 2, left = 5, right = 5, bottom = 5))
+        recView.addItemDecoration(MarginItemDecoration(top = 2, bottom = 5, left = 5))
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         recView.layoutManager = linearLayoutManager
         recView.adapter = genresAdapter

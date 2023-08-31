@@ -4,4 +4,6 @@
     <attr name="cardViewColor" format="color" />
     <attr name="textColor" format="color" />
     <attr name="genreCard" format="color" />
+    <attr name="selectedText" format="color" />
+
 </resources>

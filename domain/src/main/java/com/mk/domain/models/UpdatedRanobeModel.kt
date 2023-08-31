@@ -13,6 +13,6 @@ class UpdatedRanobeModel(
 ) : IRanobe(
     title = title,
     description = description,
-    imageLink = "https://tl.rulate.ru$imageLink",
-    linkToRanobe = "https://tl.rulate.ru$linkToRanobe"
+    imageLink = imageLink,
+    linkToRanobe = linkToRanobe
 ), Serializable

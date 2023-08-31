@@ -19,6 +19,7 @@
         <item name="cardBackgroundColor">@color/white</item>
         <item name="cardViewColor">?colorPrimary</item>
         <item name="textColor">@color/black</item>
+<!--        <item name="selectedText"></item>-->
 
     </style>
 
@@ -35,6 +36,7 @@
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">18sp</item>
     </style>
+
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>

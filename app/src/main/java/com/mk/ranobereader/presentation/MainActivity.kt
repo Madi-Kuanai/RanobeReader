@@ -2,6 +2,7 @@ package com.mk.ranobereader.presentation
 
 
 import NetworkChangeReceiver
+import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -13,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.navigation.NavigationBarView
 import com.mk.data.repositories.SharedPref.ThemePreferenceService
 import com.mk.domain.Const
@@ -24,37 +26,54 @@ import com.mk.ranobereader.presentation.errorScreen.ErrorScreen
 import com.mk.ranobereader.presentation.exploreScreen.ExploreScreen
 import com.mk.ranobereader.presentation.favouritesScreen.FavouritesScreen
 import com.mk.ranobereader.presentation.homeScreen.HomeScreen
+import com.mk.ranobereader.presentation.readingScreen.ReadingScreen
+import com.mk.ranobereader.presentation.readingScreen.viewModel.ReadingViewModel
+import com.mk.ranobereader.presentation.readingScreen.viewModel.ReadingViewModelFactory
 import com.mk.ranobereader.presentation.settingScreen.SettingScreen
 
 
 class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateListener {
+    private lateinit var readVM: ReadingViewModel
     var binding: ActivityMainBinding? = null
     var pref: ThemePreferenceService? = null
     var homeScreen = HomeScreen()
     var favouritesScreen = FavouritesScreen()
-    var exploreScreen = ExploreScreen()
+    private var exploreScreen = ExploreScreen()
     var downloadScreen = DownloadScreen()
     var settingScreen = SettingScreen()
     lateinit var lastFrame: Fragment
     private lateinit var networkChangeReceiver: NetworkChangeReceiver
-    public var isConnected: Boolean = false
+    var isConnected: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Thread.setDefaultUncaughtExceptionHandler { _, paramThrowable ->
             paramThrowable.localizedMessage?.let {
-                Log.d(
-                    TAG,
-                    "Error: " + Thread.currentThread().stackTrace[2] + "/n" + it
+                Log.e(
+                    TAG, "Error: " + Thread.currentThread().stackTrace[2] + "/n" + it
                 )
             }
         }
+        readVM = ViewModelProvider(
+            this, ReadingViewModelFactory(application)
+        )[ReadingViewModel::class.java]
+        if (readVM.getLastOpenedRanobe() != null) {
+            val intent = Intent(this, ReadingScreen()::class.java)
+            intent.putExtra(Const.IS_NEW_RANOBE, false)
+            intent.putExtra(Const.EXTRA_TYPE, readVM.getLastOpenedRanobe())
+            startActivity(intent)
+        }
+        mainInit()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun mainInit() {
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         networkChangeReceiver = NetworkChangeReceiver(this)
-
         if (networkInfo != null && networkInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
             isConnected = true
             Log.d(TAG, "onCreate: InternetActivated")
@@ -72,7 +91,6 @@ class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateList
             isConnected = false
             onInternetLoss()
         }
-
     }
 
     private fun onInternetLoss() {
@@ -89,10 +107,8 @@ class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateList
     override fun onResume() {
         super.onResume()
         registerReceiver(
-            networkChangeReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+            networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         )
-
     }
 
     override fun onPause() {
@@ -102,10 +118,6 @@ class MainActivity : AppCompatActivity(), NetworkChangeReceiver.NetworkStateList
 
     private fun init() {
         pref = ThemePreferenceService(getSharedPreferences(Const.SHARED_THEME, MODE_PRIVATE))
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     private fun setNavigationSettings() {

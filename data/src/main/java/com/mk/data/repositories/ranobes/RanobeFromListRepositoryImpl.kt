@@ -22,7 +22,6 @@ class RanobeFromListRepositoryImpl : IRanobeFromListRepository {
         try {
             if (method == Const.GET) {
                 // Connect to the URL and parse the HTML
-                Log.d(TAG, "URL: $url")
                 doc = Jsoup.connect(url).get()
             } else if (method == Const.POST) {
                 // Parse the response with Jsoup
@@ -89,8 +88,8 @@ class RanobeFromListRepositoryImpl : IRanobeFromListRepository {
 
                 val model = RanobeModel(
                     name,
-                    imageLink,
-                    linkToRanobe,
+                    Const.BASE_URI + imageLink,
+                    Const.BASE_URI + linkToRanobe,
                     author,
                     description,
                     numberOfChapter,

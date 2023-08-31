@@ -1,4 +1,4 @@
-package com.mk.ranobereader.presentation.homeScreen
+package com.mk.ranobereader.presentation.adapters
 
 import android.graphics.Rect
 import android.util.Log
@@ -11,6 +11,7 @@ import com.mk.ranobereader.R
 import com.mk.ranobereader.databinding.GenresCardBinding
 
 class GenresAdapter : RecyclerView.Adapter<GenresAdapter.GenresHolder>() {
+
     private var genresMap = mapOf<String, String>()
     private var genresKeysList = listOf<String>()
 
@@ -45,15 +46,10 @@ class GenresAdapter : RecyclerView.Adapter<GenresAdapter.GenresHolder>() {
 }
 
 class MarginItemDecoration(
-    private val top: Int,
-    private val bottom: Int,
-    private val left: Int,
-    private val right: Int
+    private val top: Int, private val bottom: Int, private val left: Int
 ) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
-        outRect: Rect, view: View,
-        parent: RecyclerView,
-        state: RecyclerView.State
+        outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
     ) {
         with(outRect) {
             top = top

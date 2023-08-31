@@ -1,6 +1,7 @@
 package com.mk.data.repositories.ranobes
 
 import android.util.Log
+import com.mk.domain.Const
 import com.mk.domain.Const.TAG
 import com.mk.domain.models.FullRanobeModel
 import com.mk.domain.useCase.IReturnRanobeRepository
@@ -10,7 +11,6 @@ import org.jsoup.nodes.Element
 class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
     override suspend fun fetchRanobe(url: String): FullRanobeModel {
         try {
-            Log.d(TAG, "URL: $url")
             val doc = Jsoup.connect(url).get().body()
             val fullNameElement = doc.selectFirst(".span8")?.selectFirst("h1")
             val fullName = fullNameElement?.text().toString()
@@ -71,12 +71,14 @@ class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
             val likesElement = doc.select("#liker").select("span").first()
             val likes = likesElement?.text() ?: ""
 
-            val chapters: MutableMap<String, String> = HashMap()
+            val chapters: MutableMap<String, String> = LinkedHashMap()
             val chaptersElements = doc.select("#Chapters").first()?.select(".chapter_row")
             chaptersElements?.forEach { elem ->
-                val name = elem.select(".t").first()?.select("a")?.text().toString()
-                val href = elem.select(".t").first()?.select("a")?.attr("href").toString()
-                chapters[name] = href
+                if (!(elem.toString().contains("""class="disabled""""))) {
+                    val name = elem.select(".t").first()?.select("a")?.text().toString()
+                    val href = elem.select(".t").first()?.select("a")?.attr("href").toString()
+                    chapters[name] = href
+                }
             }
             val statusOfTitleElement = doc.select(".span5").select("p")
                 .firstOrNull { element -> element.text().toString().contains("Выпуск:") }
@@ -87,7 +89,7 @@ class ReturnRanobeRepositoryImpl : IReturnRanobeRepository {
 
             return FullRanobeModel(
                 fullName,
-                imageLink,
+                Const.BASE_URI + imageLink,
                 url,
                 author,
                 description,

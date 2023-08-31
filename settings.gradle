@@ -21,3 +21,4 @@ rootProject.name = "RanobeReader"
 include ':app'
 include ':data'
 include ':domain'
+include ':lib'
